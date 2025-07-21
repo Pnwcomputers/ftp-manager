@@ -1,6 +1,6 @@
 # 🛡️ Secure File Manager
 
-A web-based file manager with security features, user role management, and comprehensive threat protection.
+A **production-ready, enterprise-grade** web-based file manager with advanced security features, user role management, and comprehensive threat protection.
 
 ![Security Badge](https://img.shields.io/badge/Security-Enterprise%20Grade-green)
 ![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-blue)
@@ -56,10 +56,11 @@ A web-based file manager with security features, user role management, and compr
    cd secure-file-manager
    ```
 
-2. **Upload to your web server**
+2. **Upload files to your web server**
    ```bash
-   # Upload the PHP file to your web directory
-   cp secure-file-manager.php /var/www/html/
+   # Upload both files to your web directory
+   cp index.html /var/www/html/
+   cp secure-file-manager.php /var/www/html/ftp-manager.php
    ```
 
 3. **Set permissions**
@@ -70,8 +71,14 @@ A web-based file manager with security features, user role management, and compr
 
 4. **Access the application**
    ```
-   https://yourdomain.com/secure-file-manager.php
+   https://yourdomain.com/           # Landing page
+   https://yourdomain.com/ftp-manager.php  # Direct access to file manager
    ```
+   
+   **Navigation Flow:**
+   - Visit your domain → Professional landing page
+   - Click "FTP Login" → Secure file manager login
+   - Enter credentials → Full file management interface
 
 5. **Login with default credentials** (⚠️ Change immediately!)
    ```
@@ -79,6 +86,62 @@ A web-based file manager with security features, user role management, and compr
    User:  user1 / User2024!
    Guest: guest / Guest2024!
    ```
+
+## 📁 Project Structure
+
+```
+secure-file-manager/
+├── index.html              # Landing page with navigation
+├── secure-file-manager.php # Main file manager application
+├── FTP Storage/            # Auto-created storage directory
+├── security.log            # Security events log (auto-created)
+└── README.md              # This documentation
+```
+
+### 🏠 Landing Page (`index.html`)
+The landing page provides a professional entry point to your file manager:
+
+**Features:**
+- Clean, modern design matching the file manager theme
+- Direct navigation to the secure file manager
+- Responsive layout for all devices
+- Professional branding opportunity
+
+### 🏠 Landing Page (`index.html`)
+The landing page provides a professional entry point to your file manager:
+
+**Features:**
+- ✅ Clean, modern design matching the file manager theme
+- ✅ Direct navigation to the secure file manager
+- ✅ Responsive layout for all devices
+- ✅ Professional branding opportunity
+- ✅ Fast loading with minimal dependencies
+- ✅ SEO-friendly structure
+
+**Customization Options:**
+```html
+<!-- Company Branding -->
+<h1>🏢 YourCompany File Portal</h1>
+
+<!-- Custom Navigation -->
+<a href="ftp-manager.php" class="nav-link">Access Files</a>
+<a href="help.html" class="nav-link">Help</a>
+<a href="contact.html" class="nav-link">Support</a>
+
+<!-- Color Scheme -->
+<style>
+.header {
+    background: linear-gradient(135deg, #your-color 0%, #your-color2 100%);
+}
+</style>
+```
+
+**Use Cases:**
+- 🏢 **Corporate File Portal** - Professional entry point for employees
+- 🎓 **Educational Institutions** - Student/faculty file access
+- 👥 **Client Portals** - Secure document sharing with clients
+- 🏠 **Personal Cloud** - Family/personal file management
+- 💼 **Project Management** - Team file collaboration
 
 ## ⚙️ Configuration
 
@@ -166,6 +229,69 @@ The system automatically logs all security events to `security.log`:
 - ✅ Security violations (CSRF, traversal attempts)
 - ✅ Account lockouts
 - ✅ System file access attempts
+
+## 🔄 **User Workflow**
+
+### **Complete User Journey:**
+1. **🏠 Landing Page** (`index.html`)
+   - User visits your domain
+   - Sees professional, branded interface
+   - Clicks "FTP Login" button
+
+2. **🔐 Authentication** (`secure-file-manager.php`)
+   - Secure login form appears
+   - User enters credentials
+   - System validates and creates secure session
+
+3. **📁 File Management** (Main Interface)
+   - Role-based interface loads (Admin/User)
+   - File operations available based on permissions
+   - Security monitoring active throughout session
+
+4. **🚪 Session End**
+   - Manual logout or auto-timeout
+   - Secure session cleanup
+   - Return to landing page
+
+### **Integration Benefits:**
+- **Professional Appearance** - Clean entry point for users
+- **Seamless Navigation** - One-click access to file manager
+- **Branding Consistency** - Matching design themes
+- **Security Separation** - Landing page publicly accessible, file manager secured
+- **SEO Optimization** - Landing page can be indexed, file manager remains private
+
+## 🎯 **Deployment Options**
+
+### **Option 1: With Landing Page (Recommended)**
+```
+your-domain.com/
+├── index.html          # Professional landing page
+└── ftp-manager.php     # Secure file manager
+```
+- **Professional appearance** for visitors
+- **Clean URL structure** (domain.com → file manager)
+- **Easy branding** and customization
+- **SEO-friendly** landing page
+
+### **Option 2: Direct Access**
+```
+your-domain.com/
+└── secure-file-manager.php    # Direct file manager access
+```
+- **Minimal setup** - single file deployment
+- **Direct access** to file manager functionality
+- **Suitable for** internal/private use
+
+### **Option 3: Subdirectory Setup**
+```
+your-domain.com/files/
+├── index.html              # Landing page
+├── manager.php             # File manager
+└── storage/               # File storage
+```
+- **Organized structure** for larger websites
+- **Isolated file management** area
+- **Custom URLs** and paths
 
 ## 🎨 User Interface
 
