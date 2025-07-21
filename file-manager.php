@@ -13,7 +13,8 @@ header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 header('X-XSS-Protection: 1; mode=block');
 header('Referrer-Policy: strict-origin-when-cross-origin');
-header('Content-Security-Policy: default-src \'self\'; style-src \'self\' \'unsafe-inline\'; script-src \'self\' \'unsafe-inline\';');
+// Updated CSP to allow iframe self-embedding for PDF viewing
+header('Content-Security-Policy: default-src \'self\'; style-src \'self\' \'unsafe-inline\'; script-src \'self\' \'unsafe-inline\'; frame-src \'self\';');
 
 // File and directory configuration
 $base_directory = __DIR__ . '/FTP Storage';
@@ -793,9 +794,14 @@ if (isset($_GET['action'])) {
                 exit;
             }
             
-            // For PDFs, remove frame restrictions to allow iframe viewing
+            // For PDFs, completely remove frame restrictions to allow iframe viewing
             if ($extension === 'pdf') {
-                header('X-Frame-Options: SAMEORIGIN'); // Allow same-origin framing
+                // Remove any existing X-Frame-Options header
+                header_remove('X-Frame-Options');
+                // Override with permissive iframe policy
+                header('X-Frame-Options: ALLOWALL');
+                // Add permissive CSP for this file
+                header('Content-Security-Policy: frame-ancestors \'self\';');
             }
             
             // Serve file with proper headers
@@ -1184,10 +1190,13 @@ $csrf_token = generateCSRFToken();
                         <img id="imageDisplay" src="" alt="Image preview">
                     </div>
                     <div id="pdfError" style="display: none; text-align: center; padding: 2rem;">
-                        <h3>PDF Viewer Issue</h3>
-                        <p>Unable to display PDF in browser. Please use one of these options:</p>
+                        <h3>📄 PDF Viewing Options</h3>
+                        <p style="margin: 1rem 0; color: #64748b;">Choose how you'd like to view this PDF document:</p>
                         <button class="btn" onclick="openPdfInNewTab()" style="margin: 0.5rem;">📄 Open in New Tab</button>
                         <button class="btn" onclick="downloadCurrentFile()" style="margin: 0.5rem;">⬇️ Download PDF</button>
+                        <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 1rem;">
+                            <em>Note: PDF viewing optimized for better compatibility across hosting environments</em>
+                        </p>
                     </div>
                 </div>
             </div>
