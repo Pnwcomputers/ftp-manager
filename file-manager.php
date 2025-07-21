@@ -793,6 +793,11 @@ if (isset($_GET['action'])) {
                 exit;
             }
             
+            // For PDFs, remove frame restrictions to allow iframe viewing
+            if ($extension === 'pdf') {
+                header('X-Frame-Options: SAMEORIGIN'); // Allow same-origin framing
+            }
+            
             // Serve file with proper headers
             header('Content-Type: ' . $content_types[$extension]);
             header('Content-Disposition: inline; filename="' . $filename . '"');
@@ -1174,9 +1179,15 @@ $csrf_token = generateCSRFToken();
             <div class="modal-body">
                 <div class="file-viewer">
                     <textarea id="textViewer" class="text-viewer" readonly style="display: none;"></textarea>
-                    <iframe id="pdfViewer" class="pdf-viewer" style="display: none;"></iframe>
+                    <iframe id="pdfViewer" class="pdf-viewer" style="display: none;" onload="handlePdfLoad()" onerror="handlePdfError()"></iframe>
                     <div id="imageViewer" class="image-viewer" style="display: none;">
                         <img id="imageDisplay" src="" alt="Image preview">
+                    </div>
+                    <div id="pdfError" style="display: none; text-align: center; padding: 2rem;">
+                        <h3>PDF Viewer Issue</h3>
+                        <p>Unable to display PDF in browser. Please use one of these options:</p>
+                        <button class="btn" onclick="openPdfInNewTab()" style="margin: 0.5rem;">📄 Open in New Tab</button>
+                        <button class="btn" onclick="downloadCurrentFile()" style="margin: 0.5rem;">⬇️ Download PDF</button>
                     </div>
                 </div>
             </div>
@@ -1188,6 +1199,38 @@ $csrf_token = generateCSRFToken();
         let basePath = '<?php echo $base_directory; ?>';
         let isAdmin = <?php echo isAdmin() ? 'true' : 'false'; ?>;
         let csrfToken = '<?php echo $csrf_token; ?>';
+        let currentPdfUrl = '';
+        let currentFileName = '';
+        
+        function handlePdfLoad() {
+            // PDF loaded successfully, hide error message
+            document.getElementById('pdfError').style.display = 'none';
+        }
+        
+        function handlePdfError() {
+            // PDF failed to load in iframe, show alternative options
+            document.getElementById('pdfViewer').style.display = 'none';
+            document.getElementById('pdfError').style.display = 'block';
+        }
+        
+        function openPdfInNewTab() {
+            if (currentPdfUrl) {
+                window.open(currentPdfUrl, '_blank');
+            }
+        }
+        
+        function downloadCurrentFile() {
+            if (currentPdfUrl) {
+                // Convert serve_file URL to download URL
+                const downloadUrl = currentPdfUrl.replace('action=serve_file', 'action=download');
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = currentFileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
         
         async function loadFiles(path = currentPath) {
             document.getElementById('fileList').innerHTML = '<div class="loading">Loading files...</div>';
