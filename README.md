@@ -430,7 +430,7 @@ If you discover a security vulnerability, please send an email to [security@your
 - 📖 **Documentation**: Check this README
 - 🐛 **Bug Reports**: Open an issue on GitHub
 - 💡 **Feature Requests**: Open an issue with [FEATURE] tag
-- 🔒 **Security Issues**: Email security@yourdomain.com
+- 🔒 **Security Issues**: Email support@pnwcomputers.com
 
 ---
 
