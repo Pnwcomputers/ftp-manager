@@ -994,6 +994,16 @@ $csrf_token = generateCSRFToken();
         
         .file-row:hover { background: #f8fafc; }
         
+        .file-row.drag-over {
+            background: #e0f2fe !important;
+            border: 2px dashed #0369a1;
+        }
+        
+        .file-row.dragging {
+            opacity: 0.5;
+            transform: rotate(2deg);
+        }
+        
         .action-btn {
             padding: 0.25rem 0.5rem;
             margin: 0 0.25rem;
@@ -1210,6 +1220,81 @@ $csrf_token = generateCSRFToken();
         let csrfToken = '<?php echo $csrf_token; ?>';
         let currentPdfUrl = '';
         let currentFileName = '';
+        let draggedElement = null;
+        
+        // Drag and Drop Functions
+        function handleDragStart(event, filePath) {
+            if (!isAdmin) return false;
+            
+            draggedElement = event.target;
+            event.dataTransfer.setData('text/plain', filePath);
+            event.target.classList.add('dragging');
+        }
+        
+        function handleDragEnd(event) {
+            if (!isAdmin) return false;
+            
+            event.target.classList.remove('dragging');
+            // Clean up any remaining drag-over classes
+            document.querySelectorAll('.file-row').forEach(row => {
+                row.classList.remove('drag-over');
+            });
+        }
+        
+        function handleDragOver(event) {
+            if (!isAdmin) return false;
+            
+            event.preventDefault();
+            event.target.closest('.file-row').classList.add('drag-over');
+        }
+        
+        function handleDragLeave(event) {
+            if (!isAdmin) return false;
+            
+            // Only remove drag-over if we're actually leaving the element
+            if (!event.target.closest('.file-row').contains(event.relatedTarget)) {
+                event.target.closest('.file-row').classList.remove('drag-over');
+            }
+        }
+        
+        function handleDrop(event, targetPath) {
+            if (!isAdmin) return false;
+            
+            event.preventDefault();
+            const sourceFile = event.dataTransfer.getData('text/plain');
+            
+            // Remove visual indicators
+            document.querySelectorAll('.file-row').forEach(row => {
+                row.classList.remove('drag-over', 'dragging');
+            });
+            
+            if (sourceFile && sourceFile !== targetPath) {
+                moveFile(sourceFile, targetPath);
+            }
+        }
+        
+        async function moveFile(sourcePath, targetPath) {
+            try {
+                const formData = new FormData();
+                formData.append('source', sourcePath);
+                formData.append('target', targetPath);
+                formData.append('csrf_token', csrfToken);
+                
+                const response = await fetch('?action=move', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    loadFiles(currentPath);
+                } else {
+                    alert('Move failed: ' + data.error);
+                }
+            } catch (error) {
+                alert('Move failed');
+            }
+        }
         
         function handlePdfLoad() {
             // PDF loaded successfully, hide error message
@@ -1242,14 +1327,20 @@ $csrf_token = generateCSRFToken();
         }
         
         async function loadFiles(path = currentPath) {
-            document.getElementById('fileList').innerHTML = '<div class="loading">Loading files...</div>';
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '<div class="loading">Loading files...</div>';
             
             try {
                 const response = await fetch(`?action=list&path=${encodeURIComponent(path)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 const data = await response.json();
                 
                 if (data.error) {
-                    document.getElementById('fileList').innerHTML = `<div class="error">Error: ${data.error}</div>`;
+                    fileList.innerHTML = `<div class="error">Error: ${data.error}</div>`;
                     return;
                 }
                 
@@ -1260,7 +1351,13 @@ $csrf_token = generateCSRFToken();
                 displayFiles(data.files);
                 
             } catch (error) {
-                document.getElementById('fileList').innerHTML = '<div class="error">Failed to load files - Network error</div>';
+                console.error('Load files error:', error);
+                fileList.innerHTML = `
+                    <div class="error">
+                        Failed to load files: ${error.message}<br>
+                        <button class="btn" onclick="loadFiles()" style="margin-top: 0.5rem;">🔄 Try Again</button>
+                    </div>
+                `;
             }
         }
         
@@ -1271,21 +1368,28 @@ $csrf_token = generateCSRFToken();
             // Add parent directory if not at base
             if (currentPath !== basePath) {
                 const parentPath = currentPath.substring(0, currentPath.lastIndexOf('/')) || basePath;
+                const dropEvents = isAdmin ? `ondrop="handleDrop(event, '${parentPath}')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"` : '';
+                
                 html += `
-                    <div class="file-row" onclick="loadFiles('${parentPath}')">
+                    <div class="file-row" onclick="loadFiles('${parentPath}')" ${dropEvents}>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">📁 .. (Parent Directory)</div>
                         <div>-</div>
                         <div>Folder</div>
-                        <div></div>
+                        <div>
+                            ${isAdmin ? '<span style="color: #64748b; font-size: 0.8rem;">📂 Drop files here</span>' : ''}
+                        </div>
                     </div>
                 `;
             }
             
             files.forEach(file => {
                 const clickAction = file.is_dir ? `loadFiles('${file.path}')` : '';
+                const draggable = isAdmin && !file.is_dir ? 'draggable="true"' : '';
+                const dragEvents = isAdmin && !file.is_dir ? `ondragstart="handleDragStart(event, '${file.path}')" ondragend="handleDragEnd(event)"` : '';
+                const dropEvents = file.is_dir && isAdmin ? `ondrop="handleDrop(event, '${file.path}')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"` : '';
                 
                 html += `
-                    <div class="file-row" onclick="${clickAction}">
+                    <div class="file-row" onclick="${clickAction}" ${draggable} ${dragEvents} ${dropEvents}>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">${file.icon} ${file.name}</div>
                         <div>${file.size}</div>
                         <div>${file.is_dir ? 'Folder' : 'File'}</div>
@@ -1293,6 +1397,7 @@ $csrf_token = generateCSRFToken();
                             ${file.viewable ? `<button class="action-btn view-btn" onclick="event.stopPropagation(); viewFile('${file.path}', '${file.name}')">View</button>` : ''}
                             <button class="action-btn download-btn" onclick="event.stopPropagation(); downloadFile('${file.path}', '${file.name}')">Download</button>
                             ${isAdmin && !file.is_dir ? `<button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteFile('${file.path}')">Delete</button>` : ''}
+                            ${file.is_dir && isAdmin ? '<span style="color: #64748b; font-size: 0.8rem;">📂 Drop files here</span>' : ''}
                         </div>
                     </div>
                 `;
@@ -1423,12 +1528,19 @@ $csrf_token = generateCSRFToken();
             }
             
             const folderName = prompt('Enter folder name:');
-            if (!folderName) return;
+            if (!folderName || folderName.trim() === '') return;
+            
+            // Basic validation
+            const invalidChars = /[<>:"/\\|?*]/;
+            if (invalidChars.test(folderName)) {
+                alert('Folder name contains invalid characters. Please avoid: < > : " / \\ | ? *');
+                return;
+            }
             
             try {
                 const formData = new FormData();
                 formData.append('path', currentPath);
-                formData.append('folder_name', folderName);
+                formData.append('folder_name', folderName.trim());
                 formData.append('csrf_token', csrfToken);
                 
                 const response = await fetch('?action=create_folder', {
@@ -1443,12 +1555,23 @@ $csrf_token = generateCSRFToken();
                     alert('Failed to create folder: ' + data.error);
                 }
             } catch (error) {
-                alert('Failed to create folder');
+                alert('Failed to create folder: Network error');
             }
         }
         
         function refreshFiles() {
-            loadFiles(currentPath);
+            const refreshBtn = document.querySelector('button[onclick="refreshFiles()"]');
+            if (refreshBtn) {
+                refreshBtn.disabled = true;
+                refreshBtn.textContent = '🔄 Refreshing...';
+            }
+            
+            loadFiles(currentPath).finally(() => {
+                if (refreshBtn) {
+                    refreshBtn.disabled = false;
+                    refreshBtn.textContent = '🔄 Refresh';
+                }
+            });
         }
         
         function logout() {
@@ -1457,15 +1580,32 @@ $csrf_token = generateCSRFToken();
             }
         }
         
-        // File upload handling
+        // File upload handling with improved error handling
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             if (!isAdmin) {
                 alert('Permission denied: Admin access required');
+                e.target.value = '';
                 return;
             }
             
             const files = e.target.files;
             if (files.length === 0) return;
+            
+            let successCount = 0;
+            let failCount = 0;
+            
+            // Show progress for multiple files
+            if (files.length > 1) {
+                const progress = document.createElement('div');
+                progress.innerHTML = `<div style="position: fixed; top: 20px; right: 20px; background: #667eea; color: white; padding: 1rem; border-radius: 8px; z-index: 1001;">Uploading ${files.length} files...</div>`;
+                document.body.appendChild(progress);
+                
+                setTimeout(() => {
+                    if (progress.parentNode) {
+                        document.body.removeChild(progress);
+                    }
+                }, 10000);
+            }
             
             for (let file of files) {
                 const formData = new FormData();
@@ -1480,16 +1620,74 @@ $csrf_token = generateCSRFToken();
                     });
                     
                     const data = await response.json();
-                    if (!data.success) {
-                        alert('Upload failed: ' + data.error);
+                    if (data.success) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                        console.error(`Upload failed for ${file.name}: ${data.error}`);
                     }
                 } catch (error) {
-                    alert('Upload failed for: ' + file.name);
+                    failCount++;
+                    console.error(`Upload error for ${file.name}:`, error);
                 }
             }
             
+            // Show results
+            if (failCount > 0) {
+                alert(`Upload completed: ${successCount} succeeded, ${failCount} failed. Check console for details.`);
+            }
+            
+            // Refresh file list
             loadFiles(currentPath);
             e.target.value = '';
+        });
+        
+        // Keyboard shortcuts and accessibility
+        document.addEventListener('keydown', function(event) {
+            // ESC key closes modal
+            if (event.key === 'Escape') {
+                closeViewer();
+            }
+            
+            // Ctrl+R or F5 refreshes files (prevent default browser refresh)
+            if ((event.ctrlKey && event.key === 'r') || event.key === 'F5') {
+                event.preventDefault();
+                refreshFiles();
+            }
+            
+            // Ctrl+U opens upload dialog (admin only)
+            if (event.ctrlKey && event.key === 'u' && isAdmin) {
+                event.preventDefault();
+                document.getElementById('fileInput').click();
+            }
+        });
+        
+        // Global drag and drop cleanup events
+        document.addEventListener('dragend', function(event) {
+            if (!isAdmin) return;
+            
+            // Clean up all drag states
+            document.querySelectorAll('.file-row').forEach(row => {
+                row.classList.remove('drag-over', 'dragging');
+            });
+            draggedElement = null;
+        });
+        
+        document.addEventListener('dragleave', function(event) {
+            if (!isAdmin) return;
+            
+            // If dragging outside the window, clean up
+            if (event.clientX === 0 && event.clientY === 0) {
+                document.querySelectorAll('.file-row').forEach(row => {
+                    row.classList.remove('drag-over');
+                });
+            }
+        });
+        
+        // Prevent accidental page navigation
+        window.addEventListener('beforeunload', function(event) {
+            // Only show warning if user has made changes (uploaded files, etc.)
+            // This is a basic implementation - could be enhanced to track actual changes
         });
         
         // Close modal events
