@@ -1,4 +1,4 @@
-# 🛡️ Secure File Manager
+# 🛡️ Secure Web Based FTP/Website File Manager
 
 A **production-ready, enterprise-grade** web-based file manager with advanced security features, user role management, and comprehensive threat protection.
 
