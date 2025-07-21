@@ -28,9 +28,13 @@ if (!is_dir($base_directory)) {
 
 // Allowed file extensions (whitelist approach)
 $allowed_extensions = [
-    'txt', 'md', 'log', 'csv', 'json', 'js', 'css', 'html', 'htm',
+    // Text files
+    'txt', 'md', 'log', 'csv', 'json', 'css', 'html', 'htm',
+    // Documents
     'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx',
+    // Images
     'jpg', 'jpeg', 'png', 'gif', 'svg', 'webp',
+    // Archives
     'zip', 'rar', '7z', 'tar', 'gz'
 ];
 
@@ -328,12 +332,6 @@ if (!isset($_SESSION['authenticated'])) {
                     <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
                     <button type="submit">Login</button>
                 </form>
-                <div class="demo-accounts">
-                    <strong>Demo Accounts (Change passwords!):</strong><br>
-                    <strong>Admin:</strong> admin / SecureAdmin2024!<br>
-                    <strong>User:</strong> user1 / User2024!<br>
-                    <strong>Guest:</strong> guest / Guest2024!
-                </div>
                 <div class="security-notice">
                     🛡️ <strong>Security Features Active:</strong><br>
                     • Account lockout after failed attempts<br>
@@ -385,7 +383,14 @@ function isAdmin() {
 
 function isViewableFile($filename) {
     $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-    $viewable_extensions = ['txt', 'md', 'log', 'csv', 'json', 'html', 'css', 'js', 'pdf'];
+    $viewable_extensions = [
+        // Text files (safe to view)
+        'txt', 'md', 'log', 'csv', 'json', 'html', 'css',
+        // Documents
+        'pdf',
+        // Images
+        'jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'
+    ];
     return in_array($extension, $viewable_extensions);
 }
 
@@ -689,7 +694,12 @@ if (isset($_GET['action'])) {
             
             // Only allow viewing of safe file types
             if (!isViewableFile($real_file_path)) {
-                echo json_encode(['error' => 'File type not supported for viewing']);
+                // Check if it's a document type that can't be viewed
+                if (in_array($extension, ['docx', 'doc', 'xlsx', 'xls', 'pptx', 'ppt'])) {
+                    echo json_encode(['error' => 'Document files cannot be previewed. Please download to view.']);
+                } else {
+                    echo json_encode(['error' => 'File type not supported for viewing']);
+                }
                 exit;
             }
             
@@ -715,21 +725,87 @@ if (isset($_GET['action'])) {
                     break;
                     
                 case 'pdf':
-                    // For PDFs, return the relative path for iframe viewing
-                    $relative_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $real_file_path);
-                    
                     logSecurityEvent('PDF_VIEWED', "Filename: $filename");
                     
                     echo json_encode([
                         'type' => 'pdf',
-                        'url' => $relative_path,
+                        'url' => "?action=serve_file&file=" . urlencode($file_path),
                         'filename' => $filename
+                    ]);
+                    break;
+                    
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                case 'gif':
+                case 'svg':
+                case 'webp':
+                    logSecurityEvent('IMAGE_VIEWED', "Filename: $filename");
+                    
+                    echo json_encode([
+                        'type' => 'image',
+                        'url' => "?action=serve_file&file=" . urlencode($file_path),
+                        'filename' => $filename,
+                        'extension' => $extension
                     ]);
                     break;
                     
                 default:
                     echo json_encode(['error' => 'File type not supported for viewing']);
             }
+            exit;
+            break;
+            
+        case 'serve_file':
+            $file_path = $_GET['file'];
+            
+            // Security check
+            $real_file_path = realpath($file_path);
+            $real_base = realpath($base_directory);
+            
+            if (!$real_file_path || strpos($real_file_path, $real_base) !== 0) {
+                logSecurityEvent('FILE_SERVE_PATH_TRAVERSAL', "Attempted access: $file_path");
+                http_response_code(403);
+                exit;
+            }
+            
+            if (!is_file($real_file_path)) {
+                http_response_code(404);
+                exit;
+            }
+            
+            $extension = strtolower(pathinfo($real_file_path, PATHINFO_EXTENSION));
+            $filename = basename($real_file_path);
+            
+            // Set appropriate content type based on file extension
+            $content_types = [
+                'pdf' => 'application/pdf',
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'gif' => 'image/gif',
+                'svg' => 'image/svg+xml',
+                'webp' => 'image/webp'
+            ];
+            
+            if (!isset($content_types[$extension])) {
+                http_response_code(403);
+                exit;
+            }
+            
+            // Serve file with proper headers
+            header('Content-Type: ' . $content_types[$extension]);
+            header('Content-Disposition: inline; filename="' . $filename . '"');
+            header('Content-Length: ' . filesize($real_file_path));
+            header('Cache-Control: private, max-age=3600'); // Cache for 1 hour
+            header('Pragma: public');
+            
+            // Security headers for images
+            if (strpos($content_types[$extension], 'image/') === 0) {
+                header('X-Content-Type-Options: nosniff');
+            }
+            
+            readfile($real_file_path);
             exit;
             break;
             
@@ -1016,6 +1092,23 @@ $csrf_token = generateCSRFToken();
             height: 100%;
             border: none;
         }
+        
+        .image-viewer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+        }
+        
+        .image-viewer img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -1082,6 +1175,9 @@ $csrf_token = generateCSRFToken();
                 <div class="file-viewer">
                     <textarea id="textViewer" class="text-viewer" readonly style="display: none;"></textarea>
                     <iframe id="pdfViewer" class="pdf-viewer" style="display: none;"></iframe>
+                    <div id="imageViewer" class="image-viewer" style="display: none;">
+                        <img id="imageDisplay" src="" alt="Image preview">
+                    </div>
                 </div>
             </div>
         </div>
