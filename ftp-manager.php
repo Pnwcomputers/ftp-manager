@@ -1357,8 +1357,99 @@ $csrf_token = generateCSRFToken();
             display: inline-flex;
         }
         
+        .loading, .error {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            border-radius: 8px;
+            margin: 1rem;
+        }
+        
+        .hidden-file-input {
+            display: none;
+        }
+        
+        /* Enhanced upload area for mobile and desktop */
+        #uploadArea {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 2rem 1rem;
+            text-align: center;
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        
+        #uploadArea:hover,
+        #uploadArea:active {
+            border-color: #2c5530;
+            background: #f0f9ff;
+            transform: scale(1.02);
+        }
+        
+        #uploadArea.dragover {
+            border-color: #2c5530;
+            background: #f0f9ff;
+            box-shadow: 0 4px 12px rgba(44, 85, 48, 0.1);
+        }
+        
+        // Close modal events
+        window.onclick = function(event) {
+            const modal = document.getElementById('fileViewerModal');
+            if (event.target === modal) {
+                closeViewer();
+            }
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeViewer();
+            }
+        });
+        
         /* Desktop optimizations */
         @media (min-width: 768px) {
+            .modal-content {
+                margin: 2% auto;
+                width: 90%;
+                height: 90%;
+                max-width: 1200px;
+                border-radius: 12px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            }
+            
+            .modal-header {
+                border-radius: 12px 12px 0 0;
+                padding: 1rem 2rem;
+            }
+            
+            .modal-body {
+                padding: 1rem;
+            }
+            
+            .file-viewer {
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+            }
+            
+            .image-viewer {
+                background: #f8fafc;
+            }
+            
+            .image-viewer img {
+                border-radius: 4px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+            
+            .text-viewer {
+                font-size: 14px;
+            }
+            
             .header {
                 padding: 1rem 2rem;
             }
@@ -1417,23 +1508,6 @@ $csrf_token = generateCSRFToken();
                 margin-top: 0;
                 justify-content: flex-end;
             }
-            
-            .modal-content {
-                width: 90%;
-                margin: 5% auto;
-            }
-            
-            .modal-header {
-                padding: 1rem 2rem;
-            }
-            
-            .modal-body {
-                padding: 1rem;
-            }
-            
-            .text-viewer {
-                font-size: 14px;
-            }
         }
         
         /* Large screen optimizations */
@@ -1445,6 +1519,10 @@ $csrf_token = generateCSRFToken();
             
             .file-row {
                 padding: 1rem 1.5rem;
+            }
+            
+            #uploadArea {
+                padding: 3rem 2rem;
             }
         }
     </style>
@@ -1570,11 +1648,18 @@ $csrf_token = generateCSRFToken();
             uploadSection.style.display = uploadSectionVisible ? 'block' : 'none';
         }
         
-        // Drag and Drop Functions (desktop only)
+        // Drag and Drop Functions (mobile and desktop)
+        let dragSourcePath = null;
+        let touchStartPos = { x: 0, y: 0 };
+        let isDragging = false;
+        let dragStartTime = 0;
+        
+        // Mouse drag events (desktop)
         function handleDragStart(event, filePath) {
             if (!isAdmin) return false;
             
             draggedElement = event.target;
+            dragSourcePath = filePath;
             event.dataTransfer.setData('text/plain', filePath);
             event.target.classList.add('dragging');
         }
@@ -1583,25 +1668,25 @@ $csrf_token = generateCSRFToken();
             if (!isAdmin) return false;
             
             event.target.classList.remove('dragging');
-            // Clean up any remaining drag-over classes
-            document.querySelectorAll('.file-row').forEach(row => {
-                row.classList.remove('drag-over');
-            });
+            cleanupDragStates();
         }
         
         function handleDragOver(event) {
             if (!isAdmin) return false;
             
             event.preventDefault();
-            event.target.closest('.file-row').classList.add('drag-over');
+            const fileRow = event.target.closest('.file-row');
+            if (fileRow) {
+                fileRow.classList.add('drag-over');
+            }
         }
         
         function handleDragLeave(event) {
             if (!isAdmin) return false;
             
-            // Only remove drag-over if we're actually leaving the element
-            if (!event.target.closest('.file-row').contains(event.relatedTarget)) {
-                event.target.closest('.file-row').classList.remove('drag-over');
+            const fileRow = event.target.closest('.file-row');
+            if (fileRow && !fileRow.contains(event.relatedTarget)) {
+                fileRow.classList.remove('drag-over');
             }
         }
         
@@ -1609,16 +1694,158 @@ $csrf_token = generateCSRFToken();
             if (!isAdmin) return false;
             
             event.preventDefault();
-            const sourceFile = event.dataTransfer.getData('text/plain');
+            const sourceFile = event.dataTransfer.getData('text/plain') || dragSourcePath;
             
-            // Remove visual indicators
-            document.querySelectorAll('.file-row').forEach(row => {
-                row.classList.remove('drag-over', 'dragging');
-            });
+            cleanupDragStates();
             
             if (sourceFile && sourceFile !== targetPath) {
                 moveFile(sourceFile, targetPath);
             }
+        }
+        
+        // Touch drag events (mobile)
+        function handleTouchStart(event, filePath) {
+            if (!isAdmin) return false;
+            
+            const touch = event.touches[0];
+            touchStartPos = { x: touch.clientX, y: touch.clientY };
+            dragSourcePath = filePath;
+            dragStartTime = Date.now();
+            isDragging = false;
+            
+            // Prevent default to avoid conflicts, but allow normal tap behavior
+            setTimeout(() => {
+                if (!isDragging) {
+                    // This was just a tap, not a drag
+                    return;
+                }
+            }, 200);
+        }
+        
+        function handleTouchMove(event, filePath) {
+            if (!isAdmin || !dragSourcePath) return false;
+            
+            const touch = event.touches[0];
+            const deltaX = Math.abs(touch.clientX - touchStartPos.x);
+            const deltaY = Math.abs(touch.clientY - touchStartPos.y);
+            const timeDelta = Date.now() - dragStartTime;
+            
+            // Start dragging if moved enough distance and time
+            if ((deltaX > 10 || deltaY > 10) && timeDelta > 200) {
+                isDragging = true;
+                event.preventDefault(); // Now prevent default to enable drag mode
+                
+                const fileRow = event.target.closest('.file-row');
+                if (fileRow) {
+                    fileRow.classList.add('dragging');
+                }
+                
+                // Show drag feedback
+                showDragFeedback(touch.clientX, touch.clientY);
+                
+                // Find element under touch point
+                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                updateDropTarget(elementBelow);
+            }
+        }
+        
+        function handleTouchEnd(event, filePath) {
+            if (!isAdmin || !isDragging) {
+                // Reset drag state for taps
+                dragSourcePath = null;
+                isDragging = false;
+                return false;
+            }
+            
+            event.preventDefault();
+            
+            // Find the drop target
+            const touch = event.changedTouches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const dropRow = elementBelow ? elementBelow.closest('.file-row') : null;
+            
+            if (dropRow) {
+                const targetPath = getFilePathFromRow(dropRow);
+                if (targetPath && dragSourcePath && targetPath !== dragSourcePath) {
+                    moveFile(dragSourcePath, targetPath);
+                }
+            }
+            
+            // Cleanup
+            cleanupDragStates();
+            hideDragFeedback();
+            dragSourcePath = null;
+            isDragging = false;
+        }
+        
+        function cleanupDragStates() {
+            document.querySelectorAll('.file-row').forEach(row => {
+                row.classList.remove('drag-over', 'dragging');
+            });
+        }
+        
+        function showDragFeedback(x, y) {
+            let feedback = document.getElementById('dragFeedback');
+            if (!feedback) {
+                feedback = document.createElement('div');
+                feedback.id = 'dragFeedback';
+                feedback.style.cssText = `
+                    position: fixed;
+                    background: #2c5530;
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 6px;
+                    font-size: 12px;
+                    z-index: 1002;
+                    pointer-events: none;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                `;
+                feedback.textContent = '📁 Move file';
+                document.body.appendChild(feedback);
+            }
+            
+            feedback.style.left = (x + 10) + 'px';
+            feedback.style.top = (y - 10) + 'px';
+            feedback.style.display = 'block';
+        }
+        
+        function hideDragFeedback() {
+            const feedback = document.getElementById('dragFeedback');
+            if (feedback) {
+                feedback.remove();
+            }
+        }
+        
+        function updateDropTarget(element) {
+            // Remove existing drop targets
+            document.querySelectorAll('.file-row').forEach(row => {
+                row.classList.remove('drag-over');
+            });
+            
+            // Add drop target if valid
+            const fileRow = element ? element.closest('.file-row') : null;
+            if (fileRow && isValidDropTarget(fileRow)) {
+                fileRow.classList.add('drag-over');
+            }
+        }
+        
+        function isValidDropTarget(fileRow) {
+            const fileName = fileRow.querySelector('.file-name');
+            if (!fileName) return false;
+            
+            const text = fileName.textContent;
+            // Valid drop targets: folders and parent directory
+            return text.includes('..') || text.includes('Directory') || fileRow.querySelector('.file-meta').textContent.includes('Directory');
+        }
+        
+        function getFilePathFromRow(fileRow) {
+            // Extract file path from the row's click handler or data
+            const onClick = fileRow.getAttribute('onclick');
+            if (onClick && onClick.includes('loadFiles')) {
+                const match = onClick.match(/loadFiles\('([^']+)'\)/);
+                return match ? match[1] : null;
+            }
+            return null;
         }
         
         async function moveFile(sourcePath, targetPath) {
@@ -1717,10 +1944,15 @@ $csrf_token = generateCSRFToken();
             // Add parent directory if not at base
             if (currentPath !== basePath) {
                 const parentPath = currentPath.substring(0, currentPath.lastIndexOf('/')) || basePath;
-                const dropEvents = isAdmin ? `ondrop="handleDrop(event, '${parentPath}')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"` : '';
+                // Both mouse and touch events for all devices
+                const dragEvents = isAdmin ? `
+                    ondrop="handleDrop(event, '${parentPath}')" 
+                    ondragover="handleDragOver(event)" 
+                    ondragleave="handleDragLeave(event)"
+                ` : '';
                 
                 html += `
-                    <div class="file-row" onclick="loadFiles('${parentPath}')" ${dropEvents}>
+                    <div class="file-row" onclick="loadFiles('${parentPath}')" ${dragEvents}>
                         <div class="file-info">
                             <div class="file-icon" style="background: #fbbf24; color: white;">📁</div>
                             <div class="file-details">
@@ -1728,19 +1960,39 @@ $csrf_token = generateCSRFToken();
                                 <div class="file-meta">Go up one level</div>
                             </div>
                         </div>
-                        ${isAdmin ? '<div class="drag-drop-hint">📂 Drop files here (desktop)</div>' : ''}
+                        ${isAdmin ? '<div class="drag-drop-hint">📂 Drop files here</div>' : ''}
                     </div>
                 `;
             }
             
             files.forEach(file => {
                 const clickAction = file.is_dir ? `loadFiles('${file.path}')` : '';
-                const draggable = isAdmin && !file.is_dir && window.innerWidth > 768 ? 'draggable="true"' : '';
-                const dragEvents = isAdmin && !file.is_dir && window.innerWidth > 768 ? `ondragstart="handleDragStart(event, '${file.path}')" ondragend="handleDragEnd(event)"` : '';
-                const dropEvents = file.is_dir && isAdmin && window.innerWidth > 768 ? `ondrop="handleDrop(event, '${file.path}')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"` : '';
+                
+                // Enable drag for files on all devices if admin
+                const draggable = isAdmin && !file.is_dir ? 'draggable="true"' : '';
+                
+                // Mouse drag events
+                const mouseDragEvents = isAdmin && !file.is_dir ? `
+                    ondragstart="handleDragStart(event, '${file.path}')" 
+                    ondragend="handleDragEnd(event)"
+                ` : '';
+                
+                // Touch drag events for mobile
+                const touchDragEvents = isAdmin && !file.is_dir ? `
+                    ontouchstart="handleTouchStart(event, '${file.path}')" 
+                    ontouchmove="handleTouchMove(event, '${file.path}')" 
+                    ontouchend="handleTouchEnd(event, '${file.path}')"
+                ` : '';
+                
+                // Drop events for folders (both mouse and touch)
+                const dropEvents = file.is_dir && isAdmin ? `
+                    ondrop="handleDrop(event, '${file.path}')" 
+                    ondragover="handleDragOver(event)" 
+                    ondragleave="handleDragLeave(event)"
+                ` : '';
                 
                 html += `
-                    <div class="file-row" onclick="${clickAction}" ${draggable} ${dragEvents} ${dropEvents}>
+                    <div class="file-row" onclick="${clickAction}" ${draggable} ${mouseDragEvents} ${touchDragEvents} ${dropEvents}>
                         <div class="file-info">
                             <div class="file-icon" style="background: ${getIconColor(file.icon)}; color: white;">${file.icon}</div>
                             <div class="file-details">
@@ -1753,7 +2005,7 @@ $csrf_token = generateCSRFToken();
                             <button class="action-btn download-btn" onclick="event.stopPropagation(); downloadFile('${file.path}', '${file.name}')">Download</button>
                             ${isAdmin && !file.is_dir ? `<button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteFile('${file.path}')">Delete</button>` : ''}
                         </div>
-                        ${file.is_dir && isAdmin && window.innerWidth > 768 ? '<div class="drag-drop-hint">📂 Drop files here (desktop)</div>' : ''}
+                        ${file.is_dir && isAdmin ? '<div class="drag-drop-hint">📂 Drop files here</div>' : ''}
                     </div>
                 `;
             });
@@ -1859,62 +2111,6 @@ $csrf_token = generateCSRFToken();
             } catch (error) {
                 showMessage('Failed to load file for viewing', 'error');
             }
-        }
-        
-        function openViewer(data, fileName) {
-            const modal = document.getElementById('fileViewerModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const textViewer = document.getElementById('textViewer');
-            const pdfViewer = document.getElementById('pdfViewer');
-            const imageViewer = document.getElementById('imageViewer');
-            const imageDisplay = document.getElementById('imageDisplay');
-            const pdfError = document.getElementById('pdfError');
-            
-            // Reset viewers
-            textViewer.style.display = 'none';
-            pdfViewer.style.display = 'none';
-            imageViewer.style.display = 'none';
-            pdfError.style.display = 'none';
-            
-            modalTitle.textContent = fileName;
-            currentFileName = fileName;
-            
-            if (data.type === 'text') {
-                textViewer.value = data.content;
-                textViewer.style.display = 'block';
-                
-                if (data.extension === 'json') {
-                    try {
-                        const formatted = JSON.stringify(JSON.parse(data.content), null, 2);
-                        textViewer.value = formatted;
-                    } catch (e) {
-                        // Keep original if not valid JSON
-                    }
-                }
-            } else if (data.type === 'pdf') {
-                currentPdfUrl = data.url;
-                pdfViewer.src = data.url;
-                pdfViewer.style.display = 'block';
-            } else if (data.type === 'image') {
-                imageDisplay.src = data.url;
-                imageViewer.style.display = 'block';
-            }
-            
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeViewer() {
-            const modal = document.getElementById('fileViewerModal');
-            const pdfViewer = document.getElementById('pdfViewer');
-            const imageDisplay = document.getElementById('imageDisplay');
-            
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            pdfViewer.src = '';
-            imageDisplay.src = '';
-            currentPdfUrl = '';
-            currentFileName = '';
         }
         
         async function createFolder() {
@@ -2069,31 +2265,48 @@ $csrf_token = generateCSRFToken();
             e.target.value = '';
         });
         
-        // Drag and drop for desktop upload area
+        // Drag and drop for upload area (mobile and desktop)
         const uploadArea = document.getElementById('uploadArea');
         
+        // Mouse events (desktop)
         uploadArea.addEventListener('dragover', (e) => {
-            if (!isAdmin || window.innerWidth <= 768) return;
+            if (!isAdmin) return;
             e.preventDefault();
-            uploadArea.style.borderColor = '#2c5530';
-            uploadArea.style.background = '#f0f9ff';
+            uploadArea.classList.add('dragover');
         });
         
         uploadArea.addEventListener('dragleave', () => {
-            if (!isAdmin || window.innerWidth <= 768) return;
-            uploadArea.style.borderColor = '#cbd5e1';
-            uploadArea.style.background = 'white';
+            if (!isAdmin) return;
+            uploadArea.classList.remove('dragover');
         });
         
         uploadArea.addEventListener('drop', (e) => {
-            if (!isAdmin || window.innerWidth <= 768) return;
+            if (!isAdmin) return;
             e.preventDefault();
-            uploadArea.style.borderColor = '#cbd5e1';
-            uploadArea.style.background = 'white';
+            uploadArea.classList.remove('dragover');
             
             const fileInput = document.getElementById('fileInput');
             fileInput.files = e.dataTransfer.files;
             fileInput.dispatchEvent(new Event('change'));
+        });
+        
+        // Touch events for mobile upload area
+        let uploadTouchStartTime = 0;
+        let uploadTouchFiles = null;
+        
+        uploadArea.addEventListener('touchstart', (e) => {
+            if (!isAdmin) return;
+            uploadTouchStartTime = Date.now();
+        });
+        
+        uploadArea.addEventListener('touchend', (e) => {
+            if (!isAdmin) return;
+            
+            // Simple tap to upload
+            const touchDuration = Date.now() - uploadTouchStartTime;
+            if (touchDuration < 500) { // Quick tap
+                triggerFileUpload();
+            }
         });
         
         // Keyboard shortcuts and accessibility
