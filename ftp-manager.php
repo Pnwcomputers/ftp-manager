@@ -2113,6 +2113,149 @@ $csrf_token = generateCSRFToken();
             }
         }
         
+        function openViewer(data, fileName) {
+            const modal = document.getElementById('fileViewerModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const textViewer = document.getElementById('textViewer');
+            const pdfViewer = document.getElementById('pdfViewer');
+            const imageViewer = document.getElementById('imageViewer');
+            const imageDisplay = document.getElementById('imageDisplay');
+            const pdfError = document.getElementById('pdfError');
+            
+            // Reset viewers
+            textViewer.style.display = 'none';
+            pdfViewer.style.display = 'none';
+            imageViewer.style.display = 'none';
+            pdfError.style.display = 'none';
+            
+            modalTitle.textContent = fileName;
+            currentFileName = fileName;
+            
+            if (data.type === 'text') {
+                textViewer.value = data.content;
+                textViewer.style.display = 'block';
+                
+                if (data.extension === 'json') {
+                    try {
+                        const formatted = JSON.stringify(JSON.parse(data.content), null, 2);
+                        textViewer.value = formatted;
+                    } catch (e) {
+                        // Keep original if not valid JSON
+                    }
+                }
+            } else if (data.type === 'pdf') {
+                currentPdfUrl = data.url;
+                pdfViewer.src = data.url;
+                pdfViewer.style.display = 'block';
+            } else if (data.type === 'image') {
+                imageDisplay.src = data.url;
+                imageViewer.style.display = 'block';
+                
+                // Add pinch-to-zoom for mobile images
+                addImageZoomSupport(imageDisplay);
+            }
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Prevent background scrolling on mobile
+            if ('ontouchstart' in window) {
+                document.addEventListener('touchmove', preventBackgroundScroll, { passive: false });
+            }
+        }
+        
+        function addImageZoomSupport(img) {
+            let scale = 1;
+            let panning = false;
+            let pointX = 0;
+            let pointY = 0;
+            let start = { x: 0, y: 0 };
+            
+            img.style.transformOrigin = '0 0';
+            
+            // Touch events for pinch-to-zoom
+            img.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                
+                if (e.touches.length === 2) {
+                    // Pinch start
+                    const touch1 = e.touches[0];
+                    const touch2 = e.touches[1];
+                    const distance = Math.sqrt(
+                        Math.pow(touch2.clientX - touch1.clientX, 2) +
+                        Math.pow(touch2.clientY - touch1.clientY, 2)
+                    );
+                    
+                    img.dataset.initialDistance = distance;
+                    img.dataset.initialScale = scale;
+                } else if (e.touches.length === 1 && scale > 1) {
+                    // Pan start
+                    panning = true;
+                    start.x = e.touches[0].clientX - pointX;
+                    start.y = e.touches[0].clientY - pointY;
+                }
+            });
+            
+            img.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                
+                if (e.touches.length === 2) {
+                    // Pinch zoom
+                    const touch1 = e.touches[0];
+                    const touch2 = e.touches[1];
+                    const distance = Math.sqrt(
+                        Math.pow(touch2.clientX - touch1.clientX, 2) +
+                        Math.pow(touch2.clientY - touch1.clientY, 2)
+                    );
+                    
+                    const initialDistance = parseFloat(img.dataset.initialDistance);
+                    const initialScale = parseFloat(img.dataset.initialScale);
+                    scale = Math.max(1, Math.min(4, initialScale * (distance / initialDistance)));
+                    
+                    img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+                } else if (e.touches.length === 1 && panning && scale > 1) {
+                    // Pan
+                    pointX = e.touches[0].clientX - start.x;
+                    pointY = e.touches[0].clientY - start.y;
+                    img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+                }
+            });
+            
+            img.addEventListener('touchend', function(e) {
+                panning = false;
+                
+                // Reset if zoomed out too much
+                if (scale < 1) {
+                    scale = 1;
+                    pointX = 0;
+                    pointY = 0;
+                    img.style.transform = `translate(0px, 0px) scale(1)`;
+                }
+            });
+        }
+        
+        function preventBackgroundScroll(e) {
+            e.preventDefault();
+        }
+        
+        function closeViewer() {
+            const modal = document.getElementById('fileViewerModal');
+            const pdfViewer = document.getElementById('pdfViewer');
+            const imageDisplay = document.getElementById('imageDisplay');
+            
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            pdfViewer.src = '';
+            imageDisplay.src = '';
+            currentPdfUrl = '';
+            currentFileName = '';
+            
+            // Re-enable background scrolling
+            if ('ontouchstart' in window) {
+                document.removeEventListener('touchmove', preventBackgroundScroll);
+            }
+        }
+        
         async function createFolder() {
             if (!isAdmin) {
                 showMessage('Permission denied: Admin access required', 'error');
