@@ -1,7 +1,8 @@
 <?php
 /**
- * Secure File Manager with Enhanced Security Features
+ * Mobile-Friendly Secure File Manager with Enhanced Security Features
  * Protections against: Directory traversal, CSRF, brute force, malicious uploads, etc.
+ * Optimized for mobile devices, tablets, and desktop
  */
 
 // Security Configuration
@@ -258,86 +259,127 @@ if (!isset($_SESSION['authenticated'])) {
         <head>
             <title>Secure File Manager Login</title>
             <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
             <style>
                 body { 
-                    font-family: Arial, sans-serif; 
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
                     max-width: 400px; 
-                    margin: 100px auto; 
+                    margin: 50px auto; 
                     padding: 20px; 
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    background: linear-gradient(135deg, #2c5530 0%, #1e3a21 100%);
                     min-height: 100vh;
+                    box-sizing: border-box;
                 }
                 .login-box { 
                     background: white; 
                     padding: 2rem; 
-                    border-radius: 12px; 
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+                    border-radius: 16px; 
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
                 }
                 input { 
                     width: 100%; 
-                    padding: 12px; 
-                    margin: 10px 0; 
+                    padding: 16px; 
+                    margin: 12px 0; 
                     box-sizing: border-box; 
-                    border: 1px solid #ddd; 
-                    border-radius: 6px; 
-                    font-size: 14px;
+                    border: 2px solid #e1e5e9; 
+                    border-radius: 8px; 
+                    font-size: 16px; /* Prevents zoom on iOS */
+                    -webkit-appearance: none;
+                    appearance: none;
+                }
+                input:focus {
+                    border-color: #2c5530;
+                    outline: none;
+                    box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
                 }
                 button { 
-                    background: #667eea; 
+                    background: #2c5530; 
                     color: white; 
-                    padding: 12px 20px; 
+                    padding: 16px 24px; 
                     border: none; 
                     cursor: pointer; 
                     width: 100%; 
-                    border-radius: 6px; 
+                    border-radius: 8px; 
                     font-size: 16px;
-                    transition: background 0.3s;
+                    font-weight: 600;
+                    transition: all 0.2s;
+                    -webkit-appearance: none;
+                    appearance: none;
+                    min-height: 50px; /* Touch target */
                 }
-                button:hover { background: #5a6fd8; }
+                button:active { 
+                    background: #1e3a21; 
+                    transform: scale(0.98);
+                }
                 .error { 
                     color: #dc2626; 
-                    margin: 10px 0; 
-                    padding: 10px; 
+                    margin: 15px 0; 
+                    padding: 12px; 
                     background: #fee2e2; 
-                    border-radius: 6px; 
+                    border-radius: 8px; 
                     border: 1px solid #fecaca;
                 }
-                h2 { text-align: center; color: #333; margin-bottom: 1.5rem; }
+                h2 { 
+                    text-align: center; 
+                    color: #333; 
+                    margin-bottom: 1.5rem; 
+                    font-size: 1.5rem;
+                }
                 .security-notice {
                     background: #f0fdf4;
                     border: 1px solid #bbf7d0;
                     color: #166534;
-                    padding: 1rem;
-                    border-radius: 6px;
+                    padding: 12px;
+                    border-radius: 8px;
                     margin-top: 1rem;
-                    font-size: 12px;
+                    font-size: 13px;
+                    line-height: 1.4;
                 }
                 .demo-accounts {
                     background: #f8fafc;
-                    padding: 1rem;
-                    border-radius: 6px;
+                    padding: 12px;
+                    border-radius: 8px;
                     margin-top: 1rem;
                     font-size: 12px;
                     color: #64748b;
+                    line-height: 1.4;
+                }
+                
+                @media (max-width: 480px) {
+                    body {
+                        margin: 20px auto;
+                        padding: 15px;
+                    }
+                    .login-box {
+                        padding: 1.5rem;
+                    }
+                    h2 {
+                        font-size: 1.3rem;
+                    }
                 }
             </style>
         </head>
         <body>
             <div class="login-box">
-                <h2>🔐 Secure File Manager</h2>
+                <h2>🔐 PNW Computer Admin</h2>
                 <?php if (isset($error)) echo "<div class='error'>$error</div>"; ?>
                 <form method="post">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <input type="text" name="username" placeholder="Username" required autofocus autocomplete="username">
                     <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
-                    <button type="submit">Login</button>
+                    <button type="submit">Access File Manager</button>
                 </form>
                 <div class="security-notice">
                     🛡️ <strong>Security Features Active:</strong><br>
                     • Account lockout after failed attempts<br>
                     • CSRF protection • Secure sessions<br>
                     • File type validation • Activity logging
+                </div>
+                <div class="demo-accounts">
+                    <strong>Demo Accounts:</strong><br>
+                    Admin: admin / SecureAdmin2024!<br>
+                    User: user1 / User2024!<br>
+                    Guest: guest / Guest2024!
                 </div>
             </div>
         </body>
@@ -449,7 +491,7 @@ if (isset($_GET['action'])) {
                     'path' => $item_path,
                     'is_dir' => $is_dir,
                     'size' => $is_dir ? 'Directory' : formatBytes($size),
-                    'modified' => date('Y-m-d H:i:s', $modified),
+                    'modified' => date('M j, Y H:i', $modified),
                     'icon' => getFileIcon($item_path),
                     'viewable' => !$is_dir && isViewableFile($item_path)
                 ];
@@ -874,125 +916,199 @@ $csrf_token = generateCSRFToken();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure File Manager - PNW Computer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PNW Computer - Secure File Manager</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f5;
             color: #333;
+            overflow-x: hidden;
         }
         
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2c5530 0%, #1e3a21 100%);
             color: white;
-            padding: 1rem 2rem;
+            padding: 1rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-main {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
         }
         
         .user-info {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            font-size: 0.9rem;
+            gap: 0.5rem;
+            font-size: 0.8rem;
         }
         
         .role-badge {
             background: rgba(255,255,255,0.2);
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-        
-        .security-indicator {
-            background: rgba(34, 197, 94, 0.3);
-            padding: 0.25rem 0.5rem;
+            padding: 0.2rem 0.4rem;
             border-radius: 4px;
             font-size: 0.7rem;
         }
         
+        .security-indicator {
+            background: rgba(34, 197, 94, 0.3);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+        }
+        
+        .logout-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            min-height: 36px;
+        }
+        
+        .logout-btn:active {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .header-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
         .container {
+            padding: 1rem;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
         }
         
         .security-banner {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
-            padding: 1rem;
+            padding: 0.75rem;
             border-radius: 8px;
             margin-bottom: 1rem;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        
+        .access-notice {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+            line-height: 1.4;
         }
         
         .toolbar {
             background: white;
             padding: 1rem;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 1rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
         }
         
         .btn {
-            padding: 0.5rem 1rem;
+            padding: 12px 16px;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            background: #667eea;
+            background: #2c5530;
             color: white;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-height: 44px; /* iOS touch target */
         }
         
-        .btn:hover { background: #5a6fd8; }
+        .btn:active {
+            transform: scale(0.98);
+            background: #1e3a21;
+        }
+        
         .btn:disabled { 
             background: #cbd5e1; 
             cursor: not-allowed; 
             opacity: 0.6;
         }
         
+        .breadcrumb {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            font-size: 14px;
+            word-break: break-all;
+        }
+        
+        .breadcrumb span {
+            color: #2c5530;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .breadcrumb span:hover,
+        .breadcrumb span:active {
+            background: #f0f9ff;
+        }
+        
         .file-area {
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             overflow: hidden;
         }
         
-        .file-header {
-            background: #f8fafc;
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-            display: grid;
-            grid-template-columns: 3fr 1fr 1fr 2fr;
-            gap: 1rem;
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.9rem;
-        }
-        
         .file-row {
-            padding: 0.75rem 1rem;
+            padding: 1rem;
             border-bottom: 1px solid #f1f5f9;
-            display: grid;
-            grid-template-columns: 3fr 1fr 1fr 2fr;
-            gap: 1rem;
-            align-items: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background-color 0.2s;
+            touch-action: manipulation;
         }
         
-        .file-row:hover { background: #f8fafc; }
+        .file-row:active {
+            background: #f8fafc;
+        }
+        
+        .file-row:last-child {
+            border-bottom: none;
+        }
         
         .file-row.drag-over {
             background: #e0f2fe !important;
@@ -1004,35 +1120,107 @@ $csrf_token = generateCSRFToken();
             transform: rotate(2deg);
         }
         
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .file-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .file-details {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            word-break: break-word;
+            margin-bottom: 2px;
+        }
+        
+        .file-meta {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        
         .action-btn {
-            padding: 0.25rem 0.5rem;
-            margin: 0 0.25rem;
+            padding: 6px 12px;
             border: none;
-            border-radius: 3px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 12px;
+            font-weight: 500;
+            min-height: 32px;
+            touch-action: manipulation;
             transition: all 0.2s;
         }
         
-        .view-btn { background: #3b82f6; color: white; }
-        .view-btn:hover { background: #2563eb; }
+        .view-btn { 
+            background: #3b82f6; 
+            color: white; 
+        }
+        .view-btn:active { 
+            background: #2563eb; 
+            transform: scale(0.95);
+        }
         
-        .download-btn { background: #10b981; color: white; }
-        .download-btn:hover { background: #059669; }
+        .download-btn { 
+            background: #10b981; 
+            color: white; 
+        }
+        .download-btn:active { 
+            background: #059669; 
+            transform: scale(0.95);
+        }
         
-        .delete-btn { background: #ef4444; color: white; }
-        .delete-btn:hover { background: #dc2626; }
+        .delete-btn { 
+            background: #ef4444; 
+            color: white; 
+        }
+        .delete-btn:active { 
+            background: #dc2626; 
+            transform: scale(0.95);
+        }
+        
+        .drag-drop-hint {
+            color: #64748b;
+            font-size: 11px;
+            margin-top: 4px;
+        }
         
         .loading, .error {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 1rem;
         }
         
         .error {
             background: #fee2e2;
             color: #dc2626;
-            border-radius: 4px;
+            border-radius: 8px;
             margin: 1rem;
+        }
+        
+        .hidden-file-input {
+            display: none;
         }
         
         /* Modal styles for file viewer */
@@ -1052,8 +1240,8 @@ $csrf_token = generateCSRFToken();
             background-color: white;
             margin: 2% auto;
             padding: 0;
-            border-radius: 8px;
-            width: 90%;
+            border-radius: 12px;
+            width: 95%;
             height: 90%;
             max-width: 1200px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -1062,27 +1250,44 @@ $csrf_token = generateCSRFToken();
         }
         
         .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2c5530 0%, #1e3a21 100%);
             color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px 8px 0 0;
+            padding: 1rem;
+            border-radius: 12px 12px 0 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1rem;
+            word-break: break-word;
+            flex: 1;
+            margin-right: 1rem;
         }
         
         .close {
             background: none;
             border: none;
             color: white;
-            font-size: 2rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            padding: 0;
+            padding: 0.5rem;
+            border-radius: 4px;
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close:active {
+            background: rgba(255,255,255,0.1);
         }
         
         .modal-body {
             flex: 1;
-            padding: 1rem;
+            padding: 0.5rem;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -1091,7 +1296,7 @@ $csrf_token = generateCSRFToken();
         .file-viewer {
             flex: 1;
             border: 1px solid #e2e8f0;
-            border-radius: 4px;
+            border-radius: 8px;
             overflow: hidden;
         }
         
@@ -1099,7 +1304,7 @@ $csrf_token = generateCSRFToken();
             width: 100%;
             height: 100%;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
+            font-size: 13px;
             padding: 1rem;
             border: none;
             outline: none;
@@ -1130,19 +1335,133 @@ $csrf_token = generateCSRFToken();
             border-radius: 4px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        
+        .pdf-error {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        
+        .pdf-error h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .pdf-error p {
+            margin: 1rem 0;
+            color: #64748b;
+            line-height: 1.4;
+        }
+        
+        .pdf-error .btn {
+            margin: 0.5rem;
+            display: inline-flex;
+        }
+        
+        /* Desktop optimizations */
+        @media (min-width: 768px) {
+            .header {
+                padding: 1rem 2rem;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .user-info {
+                font-size: 0.9rem;
+                gap: 1rem;
+            }
+            
+            .role-badge {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.5rem;
+            }
+            
+            .security-indicator {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.5rem;
+            }
+            
+            .logout-btn {
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .toolbar {
+                grid-template-columns: repeat(4, 1fr);
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 2rem;
+            }
+            
+            .security-banner {
+                font-size: 0.9rem;
+                padding: 1rem;
+            }
+            
+            .access-notice {
+                font-size: 0.9rem;
+                padding: 1rem;
+            }
+            
+            .file-info {
+                display: grid;
+                grid-template-columns: auto 1fr auto auto;
+                align-items: center;
+                margin-bottom: 0;
+            }
+            
+            .file-actions {
+                margin-top: 0;
+                justify-content: flex-end;
+            }
+            
+            .modal-content {
+                width: 90%;
+                margin: 5% auto;
+            }
+            
+            .modal-header {
+                padding: 1rem 2rem;
+            }
+            
+            .modal-body {
+                padding: 1rem;
+            }
+            
+            .text-viewer {
+                font-size: 14px;
+            }
+        }
+        
+        /* Large screen optimizations */
+        @media (min-width: 1024px) {
+            .toolbar {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1rem;
+            }
+            
+            .file-row {
+                padding: 1rem 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <div>
-            <h1>🛡️ Secure File Manager</h1>
-            <small>Enhanced Security • Activity Logging • Threat Protection</small>
-        </div>
-        <div class="user-info">
-            <span>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
-            <span class="role-badge"><?php echo strtoupper($_SESSION['role']); ?></span>
-            <span class="security-indicator">🔒 SECURE</span>
-            <button class="btn" onclick="logout()">🚪 Logout</button>
+        <div class="header-main">
+            <div>
+                <h1>🛡️ PNW Computer File Manager</h1>
+                <div class="header-subtitle">Enhanced Security • Activity Logging • Threat Protection</div>
+            </div>
+            <div class="user-info">
+                <span><?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                <span class="role-badge"><?php echo strtoupper($_SESSION['role']); ?></span>
+                <span class="security-indicator">🔒 SECURE</span>
+                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+            </div>
         </div>
     </div>
 
@@ -1152,35 +1471,42 @@ $csrf_token = generateCSRFToken();
         </div>
         
         <?php if (!isAdmin()): ?>
-        <div style="background: #fef3c7; color: #92400e; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+        <div class="access-notice">
             📋 <strong>Read-Only Access:</strong> You can browse, view, and download files only.
         </div>
         <?php endif; ?>
         
         <div class="toolbar">
-            <input type="file" id="fileInput" style="display: none;" multiple>
-            <button class="btn" onclick="document.getElementById('fileInput').click()" <?php echo !isAdmin() ? 'disabled' : ''; ?>>
+            <button class="btn" onclick="triggerFileUpload()" <?php echo !isAdmin() ? 'disabled' : ''; ?>>
                 📁 Upload Files
             </button>
             <button class="btn" onclick="createFolder()" <?php echo !isAdmin() ? 'disabled' : ''; ?>>
                 📂 New Folder
             </button>
-            <button class="btn" onclick="refreshFiles()">🔄 Refresh</button>
+            <button class="btn" onclick="refreshFiles()">
+                🔄 Refresh
+            </button>
+            <button class="btn" onclick="showUploadArea()">
+                📤 Quick Upload
+            </button>
         </div>
 
-        <div style="background: white; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <span id="breadcrumb">Loading...</span>
-        </div>
+        <div class="breadcrumb" id="breadcrumb">Loading...</div>
 
         <div class="file-area">
-            <div class="file-header">
-                <div>Name</div>
-                <div>Size</div>
-                <div>Type</div>
-                <div>Actions</div>
-            </div>
             <div id="fileList" class="loading">
                 Loading files...
+            </div>
+            
+            <div id="uploadSection" style="display: none; padding: 1rem; background: #f8fafc; border-top: 1px solid #e2e8f0;">
+                <div style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 2rem 1rem; text-align: center; background: white; transition: all 0.3s ease; cursor: pointer;" 
+                     id="uploadArea" onclick="triggerFileUpload()">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📁</div>
+                    <div><strong>Tap to select files</strong></div>
+                    <div style="margin-top: 0.5rem; font-size: 14px; color: #64748b;">
+                        Or drag and drop files here (desktop)
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1189,7 +1515,7 @@ $csrf_token = generateCSRFToken();
     <div id="fileViewerModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalTitle">File Viewer</h3>
+                <h3 id="modalTitle" class="modal-title">File Viewer</h3>
                 <button class="close" onclick="closeViewer()">&times;</button>
             </div>
             <div class="modal-body">
@@ -1199,11 +1525,11 @@ $csrf_token = generateCSRFToken();
                     <div id="imageViewer" class="image-viewer" style="display: none;">
                         <img id="imageDisplay" src="" alt="Image preview">
                     </div>
-                    <div id="pdfError" style="display: none; text-align: center; padding: 2rem;">
+                    <div id="pdfError" class="pdf-error" style="display: none;">
                         <h3>📄 PDF Viewing Options</h3>
-                        <p style="margin: 1rem 0; color: #64748b;">Choose how you'd like to view this PDF document:</p>
-                        <button class="btn" onclick="openPdfInNewTab()" style="margin: 0.5rem;">📄 Open in New Tab</button>
-                        <button class="btn" onclick="downloadCurrentFile()" style="margin: 0.5rem;">⬇️ Download PDF</button>
+                        <p>Choose how you'd like to view this PDF document:</p>
+                        <button class="btn" onclick="openPdfInNewTab()">📄 Open in New Tab</button>
+                        <button class="btn" onclick="downloadCurrentFile()">⬇️ Download PDF</button>
                         <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 1rem;">
                             <em>Note: PDF viewing optimized for better compatibility across hosting environments</em>
                         </p>
@@ -1213,6 +1539,8 @@ $csrf_token = generateCSRFToken();
         </div>
     </div>
 
+    <input type="file" id="fileInput" class="hidden-file-input" multiple accept="*/*">
+
     <script>
         let currentPath = '<?php echo $base_directory; ?>';
         let basePath = '<?php echo $base_directory; ?>';
@@ -1221,8 +1549,28 @@ $csrf_token = generateCSRFToken();
         let currentPdfUrl = '';
         let currentFileName = '';
         let draggedElement = null;
+        let uploadSectionVisible = false;
         
-        // Drag and Drop Functions
+        // Touch and mobile optimized functions
+        function triggerFileUpload() {
+            if (!isAdmin) {
+                alert('Permission denied: Admin access required');
+                return;
+            }
+            document.getElementById('fileInput').click();
+        }
+        
+        function showUploadArea() {
+            if (!isAdmin) {
+                alert('Permission denied: Admin access required');
+                return;
+            }
+            uploadSectionVisible = !uploadSectionVisible;
+            const uploadSection = document.getElementById('uploadSection');
+            uploadSection.style.display = uploadSectionVisible ? 'block' : 'none';
+        }
+        
+        // Drag and Drop Functions (desktop only)
         function handleDragStart(event, filePath) {
             if (!isAdmin) return false;
             
@@ -1288,11 +1636,12 @@ $csrf_token = generateCSRFToken();
                 const data = await response.json();
                 if (data.success) {
                     loadFiles(currentPath);
+                    showMessage('File moved successfully!', 'success');
                 } else {
-                    alert('Move failed: ' + data.error);
+                    showMessage('Move failed: ' + data.error, 'error');
                 }
             } catch (error) {
-                alert('Move failed');
+                showMessage('Move failed - connection error', 'error');
             }
         }
         
@@ -1372,44 +1721,66 @@ $csrf_token = generateCSRFToken();
                 
                 html += `
                     <div class="file-row" onclick="loadFiles('${parentPath}')" ${dropEvents}>
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">📁 .. (Parent Directory)</div>
-                        <div>-</div>
-                        <div>Folder</div>
-                        <div>
-                            ${isAdmin ? '<span style="color: #64748b; font-size: 0.8rem;">📂 Drop files here</span>' : ''}
+                        <div class="file-info">
+                            <div class="file-icon" style="background: #fbbf24; color: white;">📁</div>
+                            <div class="file-details">
+                                <div class="file-name">.. (Parent Directory)</div>
+                                <div class="file-meta">Go up one level</div>
+                            </div>
                         </div>
+                        ${isAdmin ? '<div class="drag-drop-hint">📂 Drop files here (desktop)</div>' : ''}
                     </div>
                 `;
             }
             
             files.forEach(file => {
                 const clickAction = file.is_dir ? `loadFiles('${file.path}')` : '';
-                const draggable = isAdmin && !file.is_dir ? 'draggable="true"' : '';
-                const dragEvents = isAdmin && !file.is_dir ? `ondragstart="handleDragStart(event, '${file.path}')" ondragend="handleDragEnd(event)"` : '';
-                const dropEvents = file.is_dir && isAdmin ? `ondrop="handleDrop(event, '${file.path}')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"` : '';
+                const draggable = isAdmin && !file.is_dir && window.innerWidth > 768 ? 'draggable="true"' : '';
+                const dragEvents = isAdmin && !file.is_dir && window.innerWidth > 768 ? `ondragstart="handleDragStart(event, '${file.path}')" ondragend="handleDragEnd(event)"` : '';
+                const dropEvents = file.is_dir && isAdmin && window.innerWidth > 768 ? `ondrop="handleDrop(event, '${file.path}')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"` : '';
                 
                 html += `
                     <div class="file-row" onclick="${clickAction}" ${draggable} ${dragEvents} ${dropEvents}>
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">${file.icon} ${file.name}</div>
-                        <div>${file.size}</div>
-                        <div>${file.is_dir ? 'Folder' : 'File'}</div>
-                        <div>
+                        <div class="file-info">
+                            <div class="file-icon" style="background: ${getIconColor(file.icon)}; color: white;">${file.icon}</div>
+                            <div class="file-details">
+                                <div class="file-name">${file.name}</div>
+                                <div class="file-meta">${file.size} • ${file.modified}</div>
+                            </div>
+                        </div>
+                        <div class="file-actions">
                             ${file.viewable ? `<button class="action-btn view-btn" onclick="event.stopPropagation(); viewFile('${file.path}', '${file.name}')">View</button>` : ''}
                             <button class="action-btn download-btn" onclick="event.stopPropagation(); downloadFile('${file.path}', '${file.name}')">Download</button>
                             ${isAdmin && !file.is_dir ? `<button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteFile('${file.path}')">Delete</button>` : ''}
-                            ${file.is_dir && isAdmin ? '<span style="color: #64748b; font-size: 0.8rem;">📂 Drop files here</span>' : ''}
                         </div>
+                        ${file.is_dir && isAdmin && window.innerWidth > 768 ? '<div class="drag-drop-hint">📂 Drop files here (desktop)</div>' : ''}
                     </div>
                 `;
             });
             
-            fileList.innerHTML = html || '<div class="loading">No files found</div>';
+            fileList.innerHTML = html || '<div class="loading">No files found in this directory</div>';
+        }
+        
+        function getIconColor(icon) {
+            const iconColors = {
+                '🌐': '#f97316',
+                '🎨': '#3b82f6', 
+                '⚡': '#eab308',
+                '🐘': '#8b5cf6',
+                '📝': '#64748b',
+                '🖼️': '#10b981',
+                '📄': '#dc2626',
+                '📦': '#f59e0b',
+                '📊': '#059669',
+                '📁': '#fbbf24'
+            };
+            return iconColors[icon] || '#64748b';
         }
         
         function updateBreadcrumb() {
             const relativePath = currentPath.replace(basePath, '');
             const parts = relativePath.split('/').filter(part => part);
-            let breadcrumbHTML = `<span onclick="loadFiles('${basePath}')" style="cursor: pointer; color: #667eea;">🏠 Home</span>`;
+            let breadcrumbHTML = `<span onclick="loadFiles('${basePath}')">🏠 Home</span>`;
             
             let buildPath = basePath;
             parts.forEach((part, index) => {
@@ -1417,7 +1788,7 @@ $csrf_token = generateCSRFToken();
                 if (index === parts.length - 1) {
                     breadcrumbHTML += ` / <strong>${part}</strong>`;
                 } else {
-                    breadcrumbHTML += ` / <span onclick="loadFiles('${buildPath}')" style="cursor: pointer; color: #667eea;">${part}</span>`;
+                    breadcrumbHTML += ` / <span onclick="loadFiles('${buildPath}')">${part}</span>`;
                 }
             });
             
@@ -1426,11 +1797,13 @@ $csrf_token = generateCSRFToken();
         
         async function deleteFile(filePath) {
             if (!isAdmin) {
-                alert('Permission denied: Admin access required');
+                showMessage('Permission denied: Admin access required', 'error');
                 return;
             }
             
             if (!confirm('Are you sure you want to delete this file?')) return;
+            
+            showMessage('Deleting file...', 'loading');
             
             try {
                 const formData = new FormData();
@@ -1444,15 +1817,17 @@ $csrf_token = generateCSRFToken();
                 
                 if (data.success) {
                     loadFiles(currentPath);
+                    showMessage('File deleted successfully!', 'success');
                 } else {
-                    alert('Delete failed: ' + data.error);
+                    showMessage('Delete failed: ' + data.error, 'error');
                 }
             } catch (error) {
-                alert('Delete failed');
+                showMessage('Delete failed - connection error', 'error');
             }
         }
         
         function downloadFile(filePath, fileName) {
+            showMessage(`Downloading ${fileName}...`, 'loading');
             const downloadUrl = `?action=download&file=${encodeURIComponent(filePath)}`;
             const link = document.createElement('a');
             link.href = downloadUrl;
@@ -1460,22 +1835,29 @@ $csrf_token = generateCSRFToken();
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            
+            setTimeout(() => {
+                showMessage('Download started!', 'success');
+            }, 1000);
         }
         
         async function viewFile(filePath, fileName) {
+            showMessage('Loading file for viewing...', 'loading');
+            
             try {
                 const response = await fetch(`?action=view&file=${encodeURIComponent(filePath)}`);
                 const data = await response.json();
                 
                 if (data.error) {
-                    alert('View failed: ' + data.error);
+                    showMessage('View failed: ' + data.error, 'error');
                     return;
                 }
                 
                 openViewer(data, fileName);
+                showMessage('File loaded successfully!', 'success');
                 
             } catch (error) {
-                alert('Failed to load file for viewing');
+                showMessage('Failed to load file for viewing', 'error');
             }
         }
         
@@ -1484,12 +1866,18 @@ $csrf_token = generateCSRFToken();
             const modalTitle = document.getElementById('modalTitle');
             const textViewer = document.getElementById('textViewer');
             const pdfViewer = document.getElementById('pdfViewer');
+            const imageViewer = document.getElementById('imageViewer');
+            const imageDisplay = document.getElementById('imageDisplay');
+            const pdfError = document.getElementById('pdfError');
             
             // Reset viewers
             textViewer.style.display = 'none';
             pdfViewer.style.display = 'none';
+            imageViewer.style.display = 'none';
+            pdfError.style.display = 'none';
             
             modalTitle.textContent = fileName;
+            currentFileName = fileName;
             
             if (data.type === 'text') {
                 textViewer.value = data.content;
@@ -1504,8 +1892,12 @@ $csrf_token = generateCSRFToken();
                     }
                 }
             } else if (data.type === 'pdf') {
+                currentPdfUrl = data.url;
                 pdfViewer.src = data.url;
                 pdfViewer.style.display = 'block';
+            } else if (data.type === 'image') {
+                imageDisplay.src = data.url;
+                imageViewer.style.display = 'block';
             }
             
             modal.style.display = 'block';
@@ -1515,15 +1907,19 @@ $csrf_token = generateCSRFToken();
         function closeViewer() {
             const modal = document.getElementById('fileViewerModal');
             const pdfViewer = document.getElementById('pdfViewer');
+            const imageDisplay = document.getElementById('imageDisplay');
             
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
             pdfViewer.src = '';
+            imageDisplay.src = '';
+            currentPdfUrl = '';
+            currentFileName = '';
         }
         
         async function createFolder() {
             if (!isAdmin) {
-                alert('Permission denied: Admin access required');
+                showMessage('Permission denied: Admin access required', 'error');
                 return;
             }
             
@@ -1533,9 +1929,11 @@ $csrf_token = generateCSRFToken();
             // Basic validation
             const invalidChars = /[<>:"/\\|?*]/;
             if (invalidChars.test(folderName)) {
-                alert('Folder name contains invalid characters. Please avoid: < > : " / \\ | ? *');
+                showMessage('Folder name contains invalid characters. Please avoid: < > : " / \\ | ? *', 'error');
                 return;
             }
+            
+            showMessage('Creating folder...', 'loading');
             
             try {
                 const formData = new FormData();
@@ -1551,27 +1949,17 @@ $csrf_token = generateCSRFToken();
                 const data = await response.json();
                 if (data.success) {
                     loadFiles(currentPath);
+                    showMessage('Folder created successfully!', 'success');
                 } else {
-                    alert('Failed to create folder: ' + data.error);
+                    showMessage('Failed to create folder: ' + data.error, 'error');
                 }
             } catch (error) {
-                alert('Failed to create folder: Network error');
+                showMessage('Failed to create folder: Network error', 'error');
             }
         }
         
         function refreshFiles() {
-            const refreshBtn = document.querySelector('button[onclick="refreshFiles()"]');
-            if (refreshBtn) {
-                refreshBtn.disabled = true;
-                refreshBtn.textContent = '🔄 Refreshing...';
-            }
-            
-            loadFiles(currentPath).finally(() => {
-                if (refreshBtn) {
-                    refreshBtn.disabled = false;
-                    refreshBtn.textContent = '🔄 Refresh';
-                }
-            });
+            loadFiles(currentPath);
         }
         
         function logout() {
@@ -1580,10 +1968,58 @@ $csrf_token = generateCSRFToken();
             }
         }
         
-        // File upload handling with improved error handling
+        function showMessage(message, type) {
+            // Simple toast-like message system
+            const existingToast = document.getElementById('toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+            
+            const toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'error' ? '#dc2626' : type === 'success' ? '#059669' : '#2c5530'};
+                color: white;
+                padding: 12px 16px;
+                border-radius: 8px;
+                z-index: 1001;
+                font-size: 14px;
+                max-width: 300px;
+                word-wrap: break-word;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                animation: slideIn 0.3s ease;
+            `;
+            toast.textContent = message;
+            
+            // Add slide in animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(toast);
+            
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.style.animation = 'slideIn 0.3s ease reverse';
+                        setTimeout(() => toast.remove(), 300);
+                    }
+                }, 3000);
+            }
+        }
+        
+        // File upload handling with mobile optimizations
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             if (!isAdmin) {
-                alert('Permission denied: Admin access required');
+                showMessage('Permission denied: Admin access required', 'error');
                 e.target.value = '';
                 return;
             }
@@ -1594,18 +2030,7 @@ $csrf_token = generateCSRFToken();
             let successCount = 0;
             let failCount = 0;
             
-            // Show progress for multiple files
-            if (files.length > 1) {
-                const progress = document.createElement('div');
-                progress.innerHTML = `<div style="position: fixed; top: 20px; right: 20px; background: #667eea; color: white; padding: 1rem; border-radius: 8px; z-index: 1001;">Uploading ${files.length} files...</div>`;
-                document.body.appendChild(progress);
-                
-                setTimeout(() => {
-                    if (progress.parentNode) {
-                        document.body.removeChild(progress);
-                    }
-                }, 10000);
-            }
+            showMessage(`Uploading ${files.length} file(s)...`, 'loading');
             
             for (let file of files) {
                 const formData = new FormData();
@@ -1633,13 +2058,42 @@ $csrf_token = generateCSRFToken();
             }
             
             // Show results
-            if (failCount > 0) {
-                alert(`Upload completed: ${successCount} succeeded, ${failCount} failed. Check console for details.`);
+            if (failCount === 0) {
+                showMessage(`${successCount} file(s) uploaded successfully!`, 'success');
+            } else {
+                showMessage(`${successCount} succeeded, ${failCount} failed. Check console for details.`, 'error');
             }
             
             // Refresh file list
             loadFiles(currentPath);
             e.target.value = '';
+        });
+        
+        // Drag and drop for desktop upload area
+        const uploadArea = document.getElementById('uploadArea');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            if (!isAdmin || window.innerWidth <= 768) return;
+            e.preventDefault();
+            uploadArea.style.borderColor = '#2c5530';
+            uploadArea.style.background = '#f0f9ff';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            if (!isAdmin || window.innerWidth <= 768) return;
+            uploadArea.style.borderColor = '#cbd5e1';
+            uploadArea.style.background = 'white';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            if (!isAdmin || window.innerWidth <= 768) return;
+            e.preventDefault();
+            uploadArea.style.borderColor = '#cbd5e1';
+            uploadArea.style.background = 'white';
+            
+            const fileInput = document.getElementById('fileInput');
+            fileInput.files = e.dataTransfer.files;
+            fileInput.dispatchEvent(new Event('change'));
         });
         
         // Keyboard shortcuts and accessibility
@@ -1658,13 +2112,21 @@ $csrf_token = generateCSRFToken();
             // Ctrl+U opens upload dialog (admin only)
             if (event.ctrlKey && event.key === 'u' && isAdmin) {
                 event.preventDefault();
-                document.getElementById('fileInput').click();
+                triggerFileUpload();
             }
         });
         
-        // Global drag and drop cleanup events
+        // Modal close events
+        window.onclick = function(event) {
+            const modal = document.getElementById('fileViewerModal');
+            if (event.target === modal) {
+                closeViewer();
+            }
+        }
+        
+        // Global drag and drop cleanup events for desktop
         document.addEventListener('dragend', function(event) {
-            if (!isAdmin) return;
+            if (!isAdmin || window.innerWidth <= 768) return;
             
             // Clean up all drag states
             document.querySelectorAll('.file-row').forEach(row => {
@@ -1673,39 +2135,25 @@ $csrf_token = generateCSRFToken();
             draggedElement = null;
         });
         
-        document.addEventListener('dragleave', function(event) {
-            if (!isAdmin) return;
-            
-            // If dragging outside the window, clean up
-            if (event.clientX === 0 && event.clientY === 0) {
-                document.querySelectorAll('.file-row').forEach(row => {
-                    row.classList.remove('drag-over');
-                });
-            }
-        });
-        
-        // Prevent accidental page navigation
-        window.addEventListener('beforeunload', function(event) {
-            // Only show warning if user has made changes (uploaded files, etc.)
-            // This is a basic implementation - could be enhanced to track actual changes
-        });
-        
-        // Close modal events
-        window.onclick = function(event) {
-            const modal = document.getElementById('fileViewerModal');
-            if (event.target === modal) {
-                closeViewer();
-            }
-        }
-        
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeViewer();
-            }
-        });
-        
         // Initial load
         loadFiles();
+        
+        // Update interface based on screen size
+        function updateInterfaceForScreenSize() {
+            const isMobile = window.innerWidth <= 768;
+            const fileRows = document.querySelectorAll('.file-row');
+            
+            fileRows.forEach(row => {
+                if (isMobile) {
+                    row.removeAttribute('draggable');
+                } else if (isAdmin && !row.querySelector('.file-name').textContent.includes('..') && !row.querySelector('.file-name').textContent.includes('Directory')) {
+                    row.setAttribute('draggable', 'true');
+                }
+            });
+        }
+        
+        // Listen for screen size changes
+        window.addEventListener('resize', updateInterfaceForScreenSize);
     </script>
 </body>
 </html>
