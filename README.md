@@ -1,3 +1,5 @@
+# 🚀 PHP FTP Manager for Self-Hosted FTP Sites
+
 A web-based file manager with advanced security features, user role management, comprehensive threat protection, and **full mobile optimization**.
 
 ![Security Badge](https://img.shields.io/badge/Security-Enterprise%20Grade-green)
@@ -5,7 +7,6 @@ A web-based file manager with advanced security features, user role management, 
 ![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-blue)
 ![Cross Platform](https://img.shields.io/badge/Platform-Cross%20Device-purple)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
->>>>>>> parent of 4cd1064 (Update README.md)
 ![Maintenance](https://img.shields.io/badge/Maintained-Yes-green)
 
 ## ✨ Features
@@ -116,8 +117,8 @@ Next-generation file viewing experience:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/secure-file-manager.git
-   cd secure-file-manager
+   git clone https://github.com/Pnwcomputers/ftp-manager.git
+   cd ftp-manager
    ```
 
 2. **Upload files to your web server**
@@ -154,7 +155,7 @@ Next-generation file viewing experience:
 ## 📁 Project Structure
 
 ```
-secure-file-manager/
+ftp-manager/
 ├── index.html              # Professional landing page
 ├── secure-file-manager.php # Main file manager (mobile-optimized)
 ├── FTP Storage/            # Auto-created storage directory
@@ -420,7 +421,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - 🐛 **Bug Reports**: Open an issue on GitHub
 - 💡 **Feature Requests**: Open an issue with [FEATURE] tag
 - 📱 **Mobile Issues**: Include device/browser details
-- 🔒 **Security Issues**: Email support@pnwcomputer.com
+- 🔒 **Security Issues**: Email [support@pnwcomputers.com](mailto:support@pnwcomputers.com)
+
+---
+
+## 📊 Statistics
+
+![GitHub stars](https://img.shields.io/github/stars/Pnwcomputers/ftp-manager)
+![GitHub forks](https://img.shields.io/github/forks/Pnwcomputers/ftp-manager)
+![GitHub issues](https://img.shields.io/github/issues/Pnwcomputers/ftp-manager)
+![GitHub license](https://img.shields.io/github/license/Pnwcomputers/ftp-manager)
 
 ---
 
@@ -430,7 +440,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ for security, simplicity, and cross-device compatibility**
 
-[⭐ Star this repo](https://github.com/pnwcomputers/ftp-manager) if you found it helpful!
+[⭐ Star this repo](https://github.com/Pnwcomputers/ftp-manager) if you found it helpful!
 
 *Works seamlessly on phones, tablets, and desktop computers*
 
