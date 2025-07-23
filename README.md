@@ -4,7 +4,7 @@
 ![Windows Support](https://img.shields.io/badge/Windows-10%20%7C%2011-blue)
 ![PowerShell Version](https://img.shields.io/badge/PowerShell-5.1%2B-blue)
 ![Enterprise Ready](https://img.shields.io/badge/Enterprise-Ready-purple)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+![GitHub license](https://img.shields.io/github/license/Pnwcomputers/DeployWorkstation)
 ![Maintenance](https://img.shields.io/badge/Maintained-Yes-green)
 
 **Zero-Touch Windows Workstation Provisioning Toolkit**
