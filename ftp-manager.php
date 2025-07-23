@@ -1,4 +1,30 @@
-<?php
+// Initial load
+        loadFiles();
+        
+        // Debug function to test text viewing
+        window.testTextViewer = function() {
+            console.log('Testing text viewer...');
+            const testData = {
+                type: 'text',
+                content: 'This is a test text file.\nLine 2\nLine 3',
+                filename: 'test.txt',
+                extension: 'txt'
+            };
+            openViewer(testData, 'test.txt');
+        };
+        
+        // Debug function to check if elements exist
+        window.checkModalElements = function() {
+            const modal = document.getElementById('fileViewerModal');
+            const textViewer = document.getElementById('textViewer');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            console.log('Modal element:', modal);
+            console.log('Text viewer element:', textViewer);
+            console.log('Modal title element:', modalTitle);
+            
+            if (modal) console.log('Modal display style:', modal.style.display);
+            if (textViewer) console.log('Text viewer display style:', textViewer<?php
 /**
  * Mobile-Friendly Secure File Manager with Enhanced Security Features
  * Protections against: Directory traversal, CSRF, brute force, malicious uploads, etc.
@@ -1884,7 +1910,54 @@ $csrf_token = generateCSRFToken();
         
         function openPdfInNewTab() {
             if (currentPdfUrl) {
-                window.open(currentPdfUrl, '_blank');
+                // For mobile devices, we want to ensure the PDF opens in a way that mobile browsers can handle
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    // On mobile, opening in the same tab often works better than new tab
+                    // But we'll try new tab first for user preference
+                    const newWindow = window.open(currentPdfUrl, '_blank');
+                    
+                    // Fallback: if popup was blocked, show instructions
+                    setTimeout(() => {
+                        if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                            showMessage('Popup blocked. Tap the PDF link that appears or enable popups for this site.', 'error');
+                            // Create a temporary link as fallback
+                            const tempLink = document.createElement('a');
+                            tempLink.href = currentPdfUrl;
+                            tempLink.target = '_blank';
+                            tempLink.textContent = 'Open PDF';
+                            tempLink.style.cssText = `
+                                position: fixed; 
+                                top: 20px; 
+                                right: 20px; 
+                                background: #2c5530; 
+                                color: white; 
+                                padding: 12px 16px; 
+                                border-radius: 8px; 
+                                text-decoration: none; 
+                                z-index: 10000;
+                                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                            `;
+                            document.body.appendChild(tempLink);
+                            
+                            // Remove the temporary link after 10 seconds
+                            setTimeout(() => {
+                                if (tempLink.parentNode) {
+                                    document.body.removeChild(tempLink);
+                                }
+                            }, 10000);
+                        } else {
+                            showMessage('PDF opened in new tab!', 'success');
+                        }
+                    }, 100);
+                } else {
+                    // Desktop behavior
+                    window.open(currentPdfUrl, '_blank');
+                    showMessage('PDF opened in new tab!', 'success');
+                }
+            } else {
+                showMessage('PDF URL not available', 'error');
             }
         }
         
@@ -1958,6 +2031,8 @@ $csrf_token = generateCSRFToken();
             const fileList = document.getElementById('fileList');
             let html = '';
             
+            console.log('Displaying files:', files); // Debug log
+            
             // Add parent directory if not at base
             if (currentPath !== basePath) {
                 const parentPath = currentPath.substring(0, currentPath.lastIndexOf('/')) || basePath;
@@ -1983,6 +2058,8 @@ $csrf_token = generateCSRFToken();
             }
             
             files.forEach(file => {
+                console.log('Processing file:', file.name, 'viewable:', file.viewable, 'is_dir:', file.is_dir); // Debug log
+                
                 const clickAction = file.is_dir ? `loadFiles('${file.path}')` : '';
                 
                 // Enable drag for files on all devices if admin
@@ -2008,6 +2085,10 @@ $csrf_token = generateCSRFToken();
                     ondragleave="handleDragLeave(event)"
                 ` : '';
                 
+                // Debug the view button generation
+                const viewButton = file.viewable ? `<button class="action-btn view-btn" onclick="event.stopPropagation(); viewFile('${file.path}', '${file.name}')">View</button>` : '';
+                console.log('View button for', file.name, ':', viewButton ? 'GENERATED' : 'NOT GENERATED');
+                
                 html += `
                     <div class="file-row" onclick="${clickAction}" ${draggable} ${mouseDragEvents} ${touchDragEvents} ${dropEvents}>
                         <div class="file-info">
@@ -2018,7 +2099,7 @@ $csrf_token = generateCSRFToken();
                             </div>
                         </div>
                         <div class="file-actions">
-                            ${file.viewable ? `<button class="action-btn view-btn" onclick="event.stopPropagation(); viewFile('${file.path}', '${file.name}')">View</button>` : ''}
+                            ${viewButton}
                             <button class="action-btn download-btn" onclick="event.stopPropagation(); downloadFile('${file.path}', '${file.name}')">Download</button>
                             ${isAdmin && !file.is_dir ? `<button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteFile('${file.path}')">Delete</button>` : ''}
                         </div>
@@ -2111,14 +2192,23 @@ $csrf_token = generateCSRFToken();
         }
         
         async function viewFile(filePath, fileName) {
+            console.log('Attempting to view file:', fileName, 'at path:', filePath);
             showMessage('Loading file for viewing...', 'loading');
             
             try {
                 const response = await fetch(`?action=view&file=${encodeURIComponent(filePath)}`);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 const data = await response.json();
+                console.log('View response data:', data);
                 
                 if (data.error) {
                     showMessage('View failed: ' + data.error, 'error');
+                    console.error('View error:', data.error);
                     return;
                 }
                 
@@ -2126,11 +2216,14 @@ $csrf_token = generateCSRFToken();
                 showMessage('File loaded successfully!', 'success');
                 
             } catch (error) {
-                showMessage('Failed to load file for viewing', 'error');
+                console.error('View file error:', error);
+                showMessage('Failed to load file for viewing: ' + error.message, 'error');
             }
         }
         
         function openViewer(data, fileName) {
+            console.log('Opening viewer for:', fileName, 'with data:', data);
+            
             const modal = document.getElementById('fileViewerModal');
             const modalTitle = document.getElementById('modalTitle');
             const textViewer = document.getElementById('textViewer');
@@ -2139,43 +2232,107 @@ $csrf_token = generateCSRFToken();
             const imageDisplay = document.getElementById('imageDisplay');
             const pdfError = document.getElementById('pdfError');
             
+            if (!modal) {
+                console.error('Modal not found!');
+                showMessage('Error: File viewer modal not found', 'error');
+                return;
+            }
+            
+            if (!textViewer) {
+                console.error('Text viewer element not found!');
+                showMessage('Error: Text viewer element not found', 'error');
+                return;
+            }
+            
             // Reset all viewers
             textViewer.style.display = 'none';
-            pdfViewer.style.display = 'none';
-            imageViewer.style.display = 'none';
-            pdfError.style.display = 'none';
+            if (pdfViewer) pdfViewer.style.display = 'none';
+            if (imageViewer) imageViewer.style.display = 'none';
+            if (pdfError) pdfError.style.display = 'none';
             
             modalTitle.textContent = fileName;
             currentFileName = fileName;
             
             // Handle different file types
             if (data.type === 'text') {
-                textViewer.value = data.content;
+                console.log('Displaying text content, length:', data.content ? data.content.length : 'null');
+                textViewer.value = data.content || 'No content available';
                 textViewer.style.display = 'block';
+                console.log('Text viewer display set to block');
                 
                 // Format JSON files
                 if (data.extension === 'json') {
                     try {
                         const formatted = JSON.stringify(JSON.parse(data.content), null, 2);
                         textViewer.value = formatted;
+                        console.log('JSON formatted successfully');
                     } catch (e) {
-                        // Keep original if not valid JSON
+                        console.log('JSON formatting failed, keeping original');
                     }
                 }
             } else if (data.type === 'pdf') {
+                console.log('Displaying PDF:', data.url);
                 currentPdfUrl = data.url;
-                pdfViewer.src = data.url;
-                pdfViewer.style.display = 'block';
-            } else if (data.type === 'image') {
-                imageDisplay.src = data.url;
-                imageViewer.style.display = 'block';
                 
-                // Add pinch-to-zoom for mobile images
-                addImageZoomSupport(imageDisplay);
+                // Check if we're on a mobile device
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                const isTablet = /iPad|Android(?=.*\bMobile\b)/i.test(navigator.userAgent);
+                
+                if (isMobile && !isTablet) {
+                    // On mobile phones, show options instead of trying iframe
+                    console.log('Mobile device detected, showing PDF options');
+                    if (pdfError) {
+                        pdfError.style.display = 'block';
+                        // Update the content for mobile
+                        pdfError.innerHTML = `
+                            <h3>📱 Mobile PDF Viewer</h3>
+                            <p>PDF viewing on mobile works best with these options:</p>
+                            <button class="btn" onclick="openPdfInNewTab()" style="margin: 0.5rem; display: inline-flex; min-height: 44px;">📄 Open in Browser</button>
+                            <button class="btn" onclick="downloadCurrentFile()" style="margin: 0.5rem; display: inline-flex; min-height: 44px;">⬇️ Download PDF</button>
+                            <p style="font-size: 0.9rem; color: #64748b; margin-top: 1rem; line-height: 1.4;">
+                                <em><strong>Tip:</strong> "Open in Browser" will open the PDF in a new tab where your phone's built-in PDF viewer can handle it properly.</em>
+                            </p>
+                        `;
+                    }
+                } else {
+                    // Try iframe on desktop and tablets
+                    if (pdfViewer) {
+                        pdfViewer.src = data.url;
+                        pdfViewer.style.display = 'block';
+                        
+                        // Set a timeout to check if PDF loaded
+                        setTimeout(() => {
+                            // If iframe is still loading or failed, show options
+                            try {
+                                const iframeDoc = pdfViewer.contentDocument || pdfViewer.contentWindow.document;
+                                if (!iframeDoc || iframeDoc.readyState !== 'complete') {
+                                    handlePdfError();
+                                }
+                            } catch (e) {
+                                // Cross-origin or other error, show options
+                                handlePdfError();
+                            }
+                        }, 3000);
+                    }
+                }
+            } else if (data.type === 'image') {
+                console.log('Displaying image:', data.url);
+                if (imageDisplay && imageViewer) {
+                    imageDisplay.src = data.url;
+                    imageViewer.style.display = 'block';
+                    
+                    // Add pinch-to-zoom for mobile images
+                    addImageZoomSupport(imageDisplay);
+                }
+            } else {
+                console.error('Unknown file type:', data.type);
+                showMessage('Error: Unknown file type: ' + data.type, 'error');
+                return;
             }
             
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
+            console.log('Modal opened successfully');
             
             // Prevent background scrolling on mobile
             if ('ontouchstart' in window) {
@@ -2197,7 +2354,35 @@ $csrf_token = generateCSRFToken();
             const pdfError = document.getElementById('pdfError');
             
             if (pdfViewer) pdfViewer.style.display = 'none';
-            if (pdfError) pdfError.style.display = 'block';
+            if (pdfError) {
+                pdfError.style.display = 'block';
+                
+                // Check if we're on mobile for customized messaging
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    pdfError.innerHTML = `
+                        <h3>📱 Mobile PDF Viewer</h3>
+                        <p>This PDF couldn't load in the preview. Choose an option below:</p>
+                        <button class="btn" onclick="openPdfInNewTab()" style="margin: 0.5rem; display: inline-flex; min-height: 44px;">📄 Open in Browser</button>
+                        <button class="btn" onclick="downloadCurrentFile()" style="margin: 0.5rem; display: inline-flex; min-height: 44px;">⬇️ Download PDF</button>
+                        <p style="font-size: 0.9rem; color: #64748b; margin-top: 1rem; line-height: 1.4;">
+                            <em><strong>Recommended:</strong> Use "Open in Browser" - your phone's PDF viewer will handle it better than the web preview.</em>
+                        </p>
+                    `;
+                } else {
+                    // Desktop/tablet error message
+                    pdfError.innerHTML = `
+                        <h3>📄 PDF Viewing Options</h3>
+                        <p>The PDF preview couldn't load. Choose how you'd like to view this document:</p>
+                        <button class="btn" onclick="openPdfInNewTab()" style="margin: 0.5rem; display: inline-flex; min-height: 44px;">📄 Open in New Tab</button>
+                        <button class="btn" onclick="downloadCurrentFile()" style="margin: 0.5rem; display: inline-flex; min-height: 44px;">⬇️ Download PDF</button>
+                        <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 1rem;">
+                            <em>Note: Some PDFs work better when opened directly in the browser or downloaded to your device.</em>
+                        </p>
+                    `;
+                }
+            }
         }
         
         function openPdfInNewTab() {
