@@ -361,7 +361,7 @@ if (!isset($_SESSION['authenticated'])) {
         </head>
         <body>
             <div class="login-box">
-                <h2>🔐 Secure File Web Manager Admin</h2>
+                <h2>🔐 PNW Computer Admin</h2>
                 <?php if (isset($error)) echo "<div class='error'>$error</div>"; ?>
                 <form method="post">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
@@ -917,7 +917,7 @@ $csrf_token = generateCSRFToken();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Web Secure File Manager</title>
+    <title>PNW Computer - Secure File Manager</title>
     <style>
         * { 
             margin: 0; 
@@ -1397,14 +1397,13 @@ $csrf_token = generateCSRFToken();
             background: #f0f9ff;
             box-shadow: 0 4px 12px rgba(44, 85, 48, 0.1);
         }
-        
-        // Close modal events
-        window.onclick = function(event) {
+        // Close modal events (ensure these are properly set up)
+        window.addEventListener('click', function(event) {
             const modal = document.getElementById('fileViewerModal');
             if (event.target === modal) {
                 closeViewer();
             }
-        }
+        });
         
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
@@ -1531,7 +1530,7 @@ $csrf_token = generateCSRFToken();
     <div class="header">
         <div class="header-main">
             <div>
-                <h1>🛡️ Secure Web File Manager</h1>
+                <h1>🛡️ PNW Computer File Manager</h1>
                 <div class="header-subtitle">Enhanced Security • Activity Logging • Threat Protection</div>
             </div>
             <div class="user-info">
@@ -1594,7 +1593,7 @@ $csrf_token = generateCSRFToken();
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modalTitle" class="modal-title">File Viewer</h3>
-                <button class="close" onclick="closeViewer()">&times;</button>
+                <button class="close" onclick="closeViewer()" type="button">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="file-viewer">
@@ -1902,6 +1901,24 @@ $csrf_token = generateCSRFToken();
             }
         }
         
+        function closeViewer() {
+            const modal = document.getElementById('fileViewerModal');
+            const pdfViewer = document.getElementById('pdfViewer');
+            const imageDisplay = document.getElementById('imageDisplay');
+            
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            pdfViewer.src = '';
+            imageDisplay.src = '';
+            currentPdfUrl = '';
+            currentFileName = '';
+            
+            // Re-enable background scrolling
+            if ('ontouchstart' in window) {
+                document.removeEventListener('touchmove', preventBackgroundScroll);
+            }
+        }
+        
         async function loadFiles(path = currentPath) {
             const fileList = document.getElementById('fileList');
             fileList.innerHTML = '<div class="loading">Loading files...</div>';
@@ -2122,7 +2139,7 @@ $csrf_token = generateCSRFToken();
             const imageDisplay = document.getElementById('imageDisplay');
             const pdfError = document.getElementById('pdfError');
             
-            // Reset viewers
+            // Reset all viewers
             textViewer.style.display = 'none';
             pdfViewer.style.display = 'none';
             imageViewer.style.display = 'none';
@@ -2131,10 +2148,12 @@ $csrf_token = generateCSRFToken();
             modalTitle.textContent = fileName;
             currentFileName = fileName;
             
+            // Handle different file types
             if (data.type === 'text') {
                 textViewer.value = data.content;
                 textViewer.style.display = 'block';
                 
+                // Format JSON files
                 if (data.extension === 'json') {
                     try {
                         const formatted = JSON.stringify(JSON.parse(data.content), null, 2);
@@ -2161,6 +2180,42 @@ $csrf_token = generateCSRFToken();
             // Prevent background scrolling on mobile
             if ('ontouchstart' in window) {
                 document.addEventListener('touchmove', preventBackgroundScroll, { passive: false });
+            }
+        }
+        
+        function handlePdfLoad() {
+            // PDF loaded successfully, hide error message
+            const pdfError = document.getElementById('pdfError');
+            if (pdfError) {
+                pdfError.style.display = 'none';
+            }
+        }
+        
+        function handlePdfError() {
+            // PDF failed to load in iframe, show alternative options
+            const pdfViewer = document.getElementById('pdfViewer');
+            const pdfError = document.getElementById('pdfError');
+            
+            if (pdfViewer) pdfViewer.style.display = 'none';
+            if (pdfError) pdfError.style.display = 'block';
+        }
+        
+        function openPdfInNewTab() {
+            if (currentPdfUrl) {
+                window.open(currentPdfUrl, '_blank');
+            }
+        }
+        
+        function downloadCurrentFile() {
+            if (currentPdfUrl) {
+                // Convert serve_file URL to download URL
+                const downloadUrl = currentPdfUrl.replace('action=serve_file', 'action=download');
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = currentFileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             }
         }
         
@@ -2236,24 +2291,6 @@ $csrf_token = generateCSRFToken();
         
         function preventBackgroundScroll(e) {
             e.preventDefault();
-        }
-        
-        function closeViewer() {
-            const modal = document.getElementById('fileViewerModal');
-            const pdfViewer = document.getElementById('pdfViewer');
-            const imageDisplay = document.getElementById('imageDisplay');
-            
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            pdfViewer.src = '';
-            imageDisplay.src = '';
-            currentPdfUrl = '';
-            currentFileName = '';
-            
-            // Re-enable background scrolling
-            if ('ontouchstart' in window) {
-                document.removeEventListener('touchmove', preventBackgroundScroll);
-            }
         }
         
         async function createFolder() {
