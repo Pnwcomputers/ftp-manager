@@ -1,34 +1,7 @@
-// Initial load
-        loadFiles();
-        
-        // Debug function to test text viewing
-        window.testTextViewer = function() {
-            console.log('Testing text viewer...');
-            const testData = {
-                type: 'text',
-                content: 'This is a test text file.\nLine 2\nLine 3',
-                filename: 'test.txt',
-                extension: 'txt'
-            };
-            openViewer(testData, 'test.txt');
-        };
-        
-        // Debug function to check if elements exist
-        window.checkModalElements = function() {
-            const modal = document.getElementById('fileViewerModal');
-            const textViewer = document.getElementById('textViewer');
-            const modalTitle = document.getElementById('modalTitle');
-            
-            console.log('Modal element:', modal);
-            console.log('Text viewer element:', textViewer);
-            console.log('Modal title element:', modalTitle);
-            
-            if (modal) console.log('Modal display style:', modal.style.display);
-            if (textViewer) console.log('Text viewer display style:', textViewer<?php
+<?php
 /**
- * Mobile-Friendly Secure File Manager with Enhanced Security Features
+ * Secure File Manager with Enhanced Security Features
  * Protections against: Directory traversal, CSRF, brute force, malicious uploads, etc.
- * Optimized for mobile devices, tablets, and desktop
  */
 
 // Security Configuration
@@ -285,127 +258,86 @@ if (!isset($_SESSION['authenticated'])) {
         <head>
             <title>Secure File Manager Login</title>
             <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
                 body { 
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                    font-family: Arial, sans-serif; 
                     max-width: 400px; 
-                    margin: 50px auto; 
+                    margin: 100px auto; 
                     padding: 20px; 
-                    background: linear-gradient(135deg, #2c5530 0%, #1e3a21 100%);
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                     min-height: 100vh;
-                    box-sizing: border-box;
                 }
                 .login-box { 
                     background: white; 
                     padding: 2rem; 
-                    border-radius: 16px; 
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+                    border-radius: 12px; 
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
                 }
                 input { 
                     width: 100%; 
-                    padding: 16px; 
-                    margin: 12px 0; 
+                    padding: 12px; 
+                    margin: 10px 0; 
                     box-sizing: border-box; 
-                    border: 2px solid #e1e5e9; 
-                    border-radius: 8px; 
-                    font-size: 16px; /* Prevents zoom on iOS */
-                    -webkit-appearance: none;
-                    appearance: none;
-                }
-                input:focus {
-                    border-color: #2c5530;
-                    outline: none;
-                    box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
+                    border: 1px solid #ddd; 
+                    border-radius: 6px; 
+                    font-size: 14px;
                 }
                 button { 
-                    background: #2c5530; 
+                    background: #667eea; 
                     color: white; 
-                    padding: 16px 24px; 
+                    padding: 12px 20px; 
                     border: none; 
                     cursor: pointer; 
                     width: 100%; 
-                    border-radius: 8px; 
+                    border-radius: 6px; 
                     font-size: 16px;
-                    font-weight: 600;
-                    transition: all 0.2s;
-                    -webkit-appearance: none;
-                    appearance: none;
-                    min-height: 50px; /* Touch target */
+                    transition: background 0.3s;
                 }
-                button:active { 
-                    background: #1e3a21; 
-                    transform: scale(0.98);
-                }
+                button:hover { background: #5a6fd8; }
                 .error { 
                     color: #dc2626; 
-                    margin: 15px 0; 
-                    padding: 12px; 
+                    margin: 10px 0; 
+                    padding: 10px; 
                     background: #fee2e2; 
-                    border-radius: 8px; 
+                    border-radius: 6px; 
                     border: 1px solid #fecaca;
                 }
-                h2 { 
-                    text-align: center; 
-                    color: #333; 
-                    margin-bottom: 1.5rem; 
-                    font-size: 1.5rem;
-                }
+                h2 { text-align: center; color: #333; margin-bottom: 1.5rem; }
                 .security-notice {
                     background: #f0fdf4;
                     border: 1px solid #bbf7d0;
                     color: #166534;
-                    padding: 12px;
-                    border-radius: 8px;
+                    padding: 1rem;
+                    border-radius: 6px;
                     margin-top: 1rem;
-                    font-size: 13px;
-                    line-height: 1.4;
+                    font-size: 12px;
                 }
                 .demo-accounts {
                     background: #f8fafc;
-                    padding: 12px;
-                    border-radius: 8px;
+                    padding: 1rem;
+                    border-radius: 6px;
                     margin-top: 1rem;
                     font-size: 12px;
                     color: #64748b;
-                    line-height: 1.4;
-                }
-                
-                @media (max-width: 480px) {
-                    body {
-                        margin: 20px auto;
-                        padding: 15px;
-                    }
-                    .login-box {
-                        padding: 1.5rem;
-                    }
-                    h2 {
-                        font-size: 1.3rem;
-                    }
                 }
             </style>
         </head>
         <body>
             <div class="login-box">
-                <h2>🔐 PNW Computer Admin</h2>
+                <h2>🔐 Secure File Manager</h2>
                 <?php if (isset($error)) echo "<div class='error'>$error</div>"; ?>
                 <form method="post">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <input type="text" name="username" placeholder="Username" required autofocus autocomplete="username">
                     <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
-                    <button type="submit">Access File Manager</button>
+                    <button type="submit">Login</button>
                 </form>
                 <div class="security-notice">
                     🛡️ <strong>Security Features Active:</strong><br>
                     • Account lockout after failed attempts<br>
                     • CSRF protection • Secure sessions<br>
                     • File type validation • Activity logging
-                </div>
-                <div class="demo-accounts">
-                    <strong>Demo Accounts:</strong><br>
-                    Admin: admin / SecureAdmin2024!<br>
-                    User: user1 / User2024!<br>
-                    Guest: guest / Guest2024!
                 </div>
             </div>
         </body>
@@ -517,7 +449,7 @@ if (isset($_GET['action'])) {
                     'path' => $item_path,
                     'is_dir' => $is_dir,
                     'size' => $is_dir ? 'Directory' : formatBytes($size),
-                    'modified' => date('M j, Y H:i', $modified),
+                    'modified' => date('Y-m-d H:i:s', $modified),
                     'icon' => getFileIcon($item_path),
                     'viewable' => !$is_dir && isViewableFile($item_path)
                 ];
@@ -942,199 +874,125 @@ $csrf_token = generateCSRFToken();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PNW Computer - Secure File Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure File Manager - PNW Computer</title>
     <style>
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f5f5;
             color: #333;
-            overflow-x: hidden;
         }
         
         .header {
-            background: linear-gradient(135deg, #2c5530 0%, #1e3a21 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 1rem;
+            padding: 1rem 2rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header-main {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .header h1 {
-            font-size: 1.2rem;
-            font-weight: 600;
         }
         
         .user-info {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
+            gap: 1rem;
+            font-size: 0.9rem;
         }
         
         .role-badge {
             background: rgba(255,255,255,0.2);
-            padding: 0.2rem 0.4rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 4px;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
         }
         
         .security-indicator {
             background: rgba(34, 197, 94, 0.3);
-            padding: 0.2rem 0.4rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 4px;
-            font-size: 0.6rem;
-        }
-        
-        .logout-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 0.4rem 0.8rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            min-height: 36px;
-        }
-        
-        .logout-btn:active {
-            background: rgba(255,255,255,0.2);
-        }
-        
-        .header-subtitle {
-            font-size: 0.8rem;
-            opacity: 0.9;
+            font-size: 0.7rem;
         }
         
         .container {
-            padding: 1rem;
             max-width: 1200px;
             margin: 0 auto;
+            padding: 2rem;
         }
         
         .security-banner {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
-            padding: 0.75rem;
+            padding: 1rem;
             border-radius: 8px;
             margin-bottom: 1rem;
             text-align: center;
-            font-size: 0.8rem;
-            line-height: 1.4;
-        }
-        
-        .access-notice {
-            background: #fef3c7;
-            color: #92400e;
-            padding: 0.75rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            font-size: 0.8rem;
-            line-height: 1.4;
+            font-size: 0.9rem;
         }
         
         .toolbar {
             background: white;
             padding: 1rem;
-            border-radius: 12px;
+            border-radius: 8px;
             margin-bottom: 1rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
         }
         
         .btn {
-            padding: 12px 16px;
+            padding: 0.5rem 1rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
             cursor: pointer;
-            background: #2c5530;
+            background: #667eea;
             color: white;
-            font-size: 14px;
-            font-weight: 500;
-            text-align: center;
-            transition: all 0.2s ease;
-            touch-action: manipulation;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            min-height: 44px; /* iOS touch target */
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
         
-        .btn:active {
-            transform: scale(0.98);
-            background: #1e3a21;
-        }
-        
+        .btn:hover { background: #5a6fd8; }
         .btn:disabled { 
             background: #cbd5e1; 
             cursor: not-allowed; 
             opacity: 0.6;
         }
         
-        .breadcrumb {
-            background: white;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            font-size: 14px;
-            word-break: break-all;
-        }
-        
-        .breadcrumb span {
-            color: #2c5530;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: background-color 0.2s;
-        }
-        
-        .breadcrumb span:hover,
-        .breadcrumb span:active {
-            background: #f0f9ff;
-        }
-        
         .file-area {
             background: white;
-            border-radius: 12px;
+            border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             overflow: hidden;
         }
         
-        .file-row {
-            padding: 1rem;
-            border-bottom: 1px solid #f1f5f9;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            touch-action: manipulation;
-        }
-        
-        .file-row:active {
+        .file-header {
             background: #f8fafc;
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 2fr;
+            gap: 1rem;
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.9rem;
         }
         
-        .file-row:last-child {
-            border-bottom: none;
+        .file-row {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 2fr;
+            gap: 1rem;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
         }
+        
+        .file-row:hover { background: #f8fafc; }
         
         .file-row.drag-over {
             background: #e0f2fe !important;
@@ -1146,107 +1004,35 @@ $csrf_token = generateCSRFToken();
             transform: rotate(2deg);
         }
         
-        .file-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .file-icon {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-        
-        .file-details {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .file-name {
-            font-weight: 500;
-            word-break: break-word;
-            margin-bottom: 2px;
-        }
-        
-        .file-meta {
-            font-size: 12px;
-            color: #64748b;
-        }
-        
-        .file-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-        
         .action-btn {
-            padding: 6px 12px;
+            padding: 0.25rem 0.5rem;
+            margin: 0 0.25rem;
             border: none;
-            border-radius: 6px;
+            border-radius: 3px;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
-            min-height: 32px;
-            touch-action: manipulation;
+            font-size: 0.75rem;
             transition: all 0.2s;
         }
         
-        .view-btn { 
-            background: #3b82f6; 
-            color: white; 
-        }
-        .view-btn:active { 
-            background: #2563eb; 
-            transform: scale(0.95);
-        }
+        .view-btn { background: #3b82f6; color: white; }
+        .view-btn:hover { background: #2563eb; }
         
-        .download-btn { 
-            background: #10b981; 
-            color: white; 
-        }
-        .download-btn:active { 
-            background: #059669; 
-            transform: scale(0.95);
-        }
+        .download-btn { background: #10b981; color: white; }
+        .download-btn:hover { background: #059669; }
         
-        .delete-btn { 
-            background: #ef4444; 
-            color: white; 
-        }
-        .delete-btn:active { 
-            background: #dc2626; 
-            transform: scale(0.95);
-        }
-        
-        .drag-drop-hint {
-            color: #64748b;
-            font-size: 11px;
-            margin-top: 4px;
-        }
+        .delete-btn { background: #ef4444; color: white; }
+        .delete-btn:hover { background: #dc2626; }
         
         .loading, .error {
             text-align: center;
-            padding: 3rem 1rem;
+            padding: 2rem;
         }
         
         .error {
             background: #fee2e2;
             color: #dc2626;
-            border-radius: 8px;
+            border-radius: 4px;
             margin: 1rem;
-        }
-        
-        .hidden-file-input {
-            display: none;
         }
         
         /* Modal styles for file viewer */
@@ -1266,8 +1052,8 @@ $csrf_token = generateCSRFToken();
             background-color: white;
             margin: 2% auto;
             padding: 0;
-            border-radius: 12px;
-            width: 95%;
+            border-radius: 8px;
+            width: 90%;
             height: 90%;
             max-width: 1200px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -1276,44 +1062,27 @@ $csrf_token = generateCSRFToken();
         }
         
         .modal-header {
-            background: linear-gradient(135deg, #2c5530 0%, #1e3a21 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 1rem;
-            border-radius: 12px 12px 0 0;
+            padding: 1rem 2rem;
+            border-radius: 8px 8px 0 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        
-        .modal-title {
-            font-size: 1rem;
-            word-break: break-word;
-            flex: 1;
-            margin-right: 1rem;
         }
         
         .close {
             background: none;
             border: none;
             color: white;
-            font-size: 1.5rem;
+            font-size: 2rem;
             cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 4px;
-            min-height: 44px;
-            min-width: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .close:active {
-            background: rgba(255,255,255,0.1);
+            padding: 0;
         }
         
         .modal-body {
             flex: 1;
-            padding: 0.5rem;
+            padding: 1rem;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -1322,7 +1091,7 @@ $csrf_token = generateCSRFToken();
         .file-viewer {
             flex: 1;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            border-radius: 4px;
             overflow: hidden;
         }
         
@@ -1330,7 +1099,7 @@ $csrf_token = generateCSRFToken();
             width: 100%;
             height: 100%;
             font-family: 'Courier New', monospace;
-            font-size: 13px;
+            font-size: 14px;
             padding: 1rem;
             border: none;
             outline: none;
@@ -1361,210 +1130,19 @@ $csrf_token = generateCSRFToken();
             border-radius: 4px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        
-        .pdf-error {
-            text-align: center;
-            padding: 2rem 1rem;
-        }
-        
-        .pdf-error h3 {
-            margin-bottom: 1rem;
-            color: #333;
-        }
-        
-        .pdf-error p {
-            margin: 1rem 0;
-            color: #64748b;
-            line-height: 1.4;
-        }
-        
-        .pdf-error .btn {
-            margin: 0.5rem;
-            display: inline-flex;
-        }
-        
-        .loading, .error {
-            text-align: center;
-            padding: 3rem 1rem;
-        }
-        
-        .error {
-            background: #fee2e2;
-            color: #dc2626;
-            border-radius: 8px;
-            margin: 1rem;
-        }
-        
-        .hidden-file-input {
-            display: none;
-        }
-        
-        /* Enhanced upload area for mobile and desktop */
-        #uploadArea {
-            border: 2px dashed #cbd5e1;
-            border-radius: 12px;
-            padding: 2rem 1rem;
-            text-align: center;
-            background: white;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            touch-action: manipulation;
-        }
-        
-        #uploadArea:hover,
-        #uploadArea:active {
-            border-color: #2c5530;
-            background: #f0f9ff;
-            transform: scale(1.02);
-        }
-        
-        #uploadArea.dragover {
-            border-color: #2c5530;
-            background: #f0f9ff;
-            box-shadow: 0 4px 12px rgba(44, 85, 48, 0.1);
-        }
-        // Close modal events (ensure these are properly set up)
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('fileViewerModal');
-            if (event.target === modal) {
-                closeViewer();
-            }
-        });
-        
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeViewer();
-            }
-        });
-        
-        /* Desktop optimizations */
-        @media (min-width: 768px) {
-            .modal-content {
-                margin: 2% auto;
-                width: 90%;
-                height: 90%;
-                max-width: 1200px;
-                border-radius: 12px;
-                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            }
-            
-            .modal-header {
-                border-radius: 12px 12px 0 0;
-                padding: 1rem 2rem;
-            }
-            
-            .modal-body {
-                padding: 1rem;
-            }
-            
-            .file-viewer {
-                border: 1px solid #e2e8f0;
-                border-radius: 8px;
-            }
-            
-            .image-viewer {
-                background: #f8fafc;
-            }
-            
-            .image-viewer img {
-                border-radius: 4px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            }
-            
-            .text-viewer {
-                font-size: 14px;
-            }
-            
-            .header {
-                padding: 1rem 2rem;
-            }
-            
-            .header h1 {
-                font-size: 1.5rem;
-            }
-            
-            .user-info {
-                font-size: 0.9rem;
-                gap: 1rem;
-            }
-            
-            .role-badge {
-                font-size: 0.8rem;
-                padding: 0.25rem 0.5rem;
-            }
-            
-            .security-indicator {
-                font-size: 0.7rem;
-                padding: 0.25rem 0.5rem;
-            }
-            
-            .logout-btn {
-                font-size: 0.9rem;
-                padding: 0.5rem 1rem;
-            }
-            
-            .toolbar {
-                grid-template-columns: repeat(4, 1fr);
-                padding: 1rem;
-            }
-            
-            .container {
-                padding: 2rem;
-            }
-            
-            .security-banner {
-                font-size: 0.9rem;
-                padding: 1rem;
-            }
-            
-            .access-notice {
-                font-size: 0.9rem;
-                padding: 1rem;
-            }
-            
-            .file-info {
-                display: grid;
-                grid-template-columns: auto 1fr auto auto;
-                align-items: center;
-                margin-bottom: 0;
-            }
-            
-            .file-actions {
-                margin-top: 0;
-                justify-content: flex-end;
-            }
-        }
-        
-        /* Large screen optimizations */
-        @media (min-width: 1024px) {
-            .toolbar {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 1rem;
-            }
-            
-            .file-row {
-                padding: 1rem 1.5rem;
-            }
-            
-            #uploadArea {
-                padding: 3rem 2rem;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="header-main">
-            <div>
-                <h1>🛡️ PNW Computer File Manager</h1>
-                <div class="header-subtitle">Enhanced Security • Activity Logging • Threat Protection</div>
-            </div>
-            <div class="user-info">
-                <span><?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                <span class="role-badge"><?php echo strtoupper($_SESSION['role']); ?></span>
-                <span class="security-indicator">🔒 SECURE</span>
-                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
-            </div>
+        <div>
+            <h1>🛡️ Secure File Manager</h1>
+            <small>Enhanced Security • Activity Logging • Threat Protection</small>
+        </div>
+        <div class="user-info">
+            <span>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
+            <span class="role-badge"><?php echo strtoupper($_SESSION['role']); ?></span>
+            <span class="security-indicator">🔒 SECURE</span>
+            <button class="btn" onclick="logout()">🚪 Logout</button>
         </div>
     </div>
 
@@ -1574,42 +1152,35 @@ $csrf_token = generateCSRFToken();
         </div>
         
         <?php if (!isAdmin()): ?>
-        <div class="access-notice">
+        <div style="background: #fef3c7; color: #92400e; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
             📋 <strong>Read-Only Access:</strong> You can browse, view, and download files only.
         </div>
         <?php endif; ?>
         
         <div class="toolbar">
-            <button class="btn" onclick="triggerFileUpload()" <?php echo !isAdmin() ? 'disabled' : ''; ?>>
+            <input type="file" id="fileInput" style="display: none;" multiple>
+            <button class="btn" onclick="document.getElementById('fileInput').click()" <?php echo !isAdmin() ? 'disabled' : ''; ?>>
                 📁 Upload Files
             </button>
             <button class="btn" onclick="createFolder()" <?php echo !isAdmin() ? 'disabled' : ''; ?>>
                 📂 New Folder
             </button>
-            <button class="btn" onclick="refreshFiles()">
-                🔄 Refresh
-            </button>
-            <button class="btn" onclick="showUploadArea()">
-                📤 Quick Upload
-            </button>
+            <button class="btn" onclick="refreshFiles()">🔄 Refresh</button>
         </div>
 
-        <div class="breadcrumb" id="breadcrumb">Loading...</div>
+        <div style="background: white; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <span id="breadcrumb">Loading...</span>
+        </div>
 
         <div class="file-area">
+            <div class="file-header">
+                <div>Name</div>
+                <div>Size</div>
+                <div>Type</div>
+                <div>Actions</div>
+            </div>
             <div id="fileList" class="loading">
                 Loading files...
-            </div>
-            
-            <div id="uploadSection" style="display: none; padding: 1rem; background: #f8fafc; border-top: 1px solid #e2e8f0;">
-                <div style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 2rem 1rem; text-align: center; background: white; transition: all 0.3s ease; cursor: pointer;" 
-                     id="uploadArea" onclick="triggerFileUpload()">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📁</div>
-                    <div><strong>Tap to select files</strong></div>
-                    <div style="margin-top: 0.5rem; font-size: 14px; color: #64748b;">
-                        Or drag and drop files here (desktop)
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -1618,8 +1189,8 @@ $csrf_token = generateCSRFToken();
     <div id="fileViewerModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalTitle" class="modal-title">File Viewer</h3>
-                <button class="close" onclick="closeViewer()" type="button">&times;</button>
+                <h3 id="modalTitle">File Viewer</h3>
+                <button class="close" onclick="closeViewer()">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="file-viewer">
@@ -1628,11 +1199,11 @@ $csrf_token = generateCSRFToken();
                     <div id="imageViewer" class="image-viewer" style="display: none;">
                         <img id="imageDisplay" src="" alt="Image preview">
                     </div>
-                    <div id="pdfError" class="pdf-error" style="display: none;">
+                    <div id="pdfError" style="display: none; text-align: center; padding: 2rem;">
                         <h3>📄 PDF Viewing Options</h3>
-                        <p>Choose how you'd like to view this PDF document:</p>
-                        <button class="btn" onclick="openPdfInNewTab()">📄 Open in New Tab</button>
-                        <button class="btn" onclick="downloadCurrentFile()">⬇️ Download PDF</button>
+                        <p style="margin: 1rem 0; color: #64748b;">Choose how you'd like to view this PDF document:</p>
+                        <button class="btn" onclick="openPdfInNewTab()" style="margin: 0.5rem;">📄 Open in New Tab</button>
+                        <button class="btn" onclick="downloadCurrentFile()" style="margin: 0.5rem;">⬇️ Download PDF</button>
                         <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 1rem;">
                             <em>Note: PDF viewing optimized for better compatibility across hosting environments</em>
                         </p>
@@ -1642,8 +1213,6 @@ $csrf_token = generateCSRFToken();
         </div>
     </div>
 
-    <input type="file" id="fileInput" class="hidden-file-input" multiple accept="*/*">
-
     <script>
         let currentPath = '<?php echo $base_directory; ?>';
         let basePath = '<?php echo $base_directory; ?>';
@@ -1652,39 +1221,12 @@ $csrf_token = generateCSRFToken();
         let currentPdfUrl = '';
         let currentFileName = '';
         let draggedElement = null;
-        let uploadSectionVisible = false;
         
-        // Touch and mobile optimized functions
-        function triggerFileUpload() {
-            if (!isAdmin) {
-                alert('Permission denied: Admin access required');
-                return;
-            }
-            document.getElementById('fileInput').click();
-        }
-        
-        function showUploadArea() {
-            if (!isAdmin) {
-                alert('Permission denied: Admin access required');
-                return;
-            }
-            uploadSectionVisible = !uploadSectionVisible;
-            const uploadSection = document.getElementById('uploadSection');
-            uploadSection.style.display = uploadSectionVisible ? 'block' : 'none';
-        }
-        
-        // Drag and Drop Functions (mobile and desktop)
-        let dragSourcePath = null;
-        let touchStartPos = { x: 0, y: 0 };
-        let isDragging = false;
-        let dragStartTime = 0;
-        
-        // Mouse drag events (desktop)
+        // Drag and Drop Functions
         function handleDragStart(event, filePath) {
             if (!isAdmin) return false;
             
             draggedElement = event.target;
-            dragSourcePath = filePath;
             event.dataTransfer.setData('text/plain', filePath);
             event.target.classList.add('dragging');
         }
@@ -1693,25 +1235,25 @@ $csrf_token = generateCSRFToken();
             if (!isAdmin) return false;
             
             event.target.classList.remove('dragging');
-            cleanupDragStates();
+            // Clean up any remaining drag-over classes
+            document.querySelectorAll('.file-row').forEach(row => {
+                row.classList.remove('drag-over');
+            });
         }
         
         function handleDragOver(event) {
             if (!isAdmin) return false;
             
             event.preventDefault();
-            const fileRow = event.target.closest('.file-row');
-            if (fileRow) {
-                fileRow.classList.add('drag-over');
-            }
+            event.target.closest('.file-row').classList.add('drag-over');
         }
         
         function handleDragLeave(event) {
             if (!isAdmin) return false;
             
-            const fileRow = event.target.closest('.file-row');
-            if (fileRow && !fileRow.contains(event.relatedTarget)) {
-                fileRow.classList.remove('drag-over');
+            // Only remove drag-over if we're actually leaving the element
+            if (!event.target.closest('.file-row').contains(event.relatedTarget)) {
+                event.target.closest('.file-row').classList.remove('drag-over');
             }
         }
         
@@ -1719,158 +1261,16 @@ $csrf_token = generateCSRFToken();
             if (!isAdmin) return false;
             
             event.preventDefault();
-            const sourceFile = event.dataTransfer.getData('text/plain') || dragSourcePath;
+            const sourceFile = event.dataTransfer.getData('text/plain');
             
-            cleanupDragStates();
+            // Remove visual indicators
+            document.querySelectorAll('.file-row').forEach(row => {
+                row.classList.remove('drag-over', 'dragging');
+            });
             
             if (sourceFile && sourceFile !== targetPath) {
                 moveFile(sourceFile, targetPath);
             }
-        }
-        
-        // Touch drag events (mobile)
-        function handleTouchStart(event, filePath) {
-            if (!isAdmin) return false;
-            
-            const touch = event.touches[0];
-            touchStartPos = { x: touch.clientX, y: touch.clientY };
-            dragSourcePath = filePath;
-            dragStartTime = Date.now();
-            isDragging = false;
-            
-            // Prevent default to avoid conflicts, but allow normal tap behavior
-            setTimeout(() => {
-                if (!isDragging) {
-                    // This was just a tap, not a drag
-                    return;
-                }
-            }, 200);
-        }
-        
-        function handleTouchMove(event, filePath) {
-            if (!isAdmin || !dragSourcePath) return false;
-            
-            const touch = event.touches[0];
-            const deltaX = Math.abs(touch.clientX - touchStartPos.x);
-            const deltaY = Math.abs(touch.clientY - touchStartPos.y);
-            const timeDelta = Date.now() - dragStartTime;
-            
-            // Start dragging if moved enough distance and time
-            if ((deltaX > 10 || deltaY > 10) && timeDelta > 200) {
-                isDragging = true;
-                event.preventDefault(); // Now prevent default to enable drag mode
-                
-                const fileRow = event.target.closest('.file-row');
-                if (fileRow) {
-                    fileRow.classList.add('dragging');
-                }
-                
-                // Show drag feedback
-                showDragFeedback(touch.clientX, touch.clientY);
-                
-                // Find element under touch point
-                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                updateDropTarget(elementBelow);
-            }
-        }
-        
-        function handleTouchEnd(event, filePath) {
-            if (!isAdmin || !isDragging) {
-                // Reset drag state for taps
-                dragSourcePath = null;
-                isDragging = false;
-                return false;
-            }
-            
-            event.preventDefault();
-            
-            // Find the drop target
-            const touch = event.changedTouches[0];
-            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-            const dropRow = elementBelow ? elementBelow.closest('.file-row') : null;
-            
-            if (dropRow) {
-                const targetPath = getFilePathFromRow(dropRow);
-                if (targetPath && dragSourcePath && targetPath !== dragSourcePath) {
-                    moveFile(dragSourcePath, targetPath);
-                }
-            }
-            
-            // Cleanup
-            cleanupDragStates();
-            hideDragFeedback();
-            dragSourcePath = null;
-            isDragging = false;
-        }
-        
-        function cleanupDragStates() {
-            document.querySelectorAll('.file-row').forEach(row => {
-                row.classList.remove('drag-over', 'dragging');
-            });
-        }
-        
-        function showDragFeedback(x, y) {
-            let feedback = document.getElementById('dragFeedback');
-            if (!feedback) {
-                feedback = document.createElement('div');
-                feedback.id = 'dragFeedback';
-                feedback.style.cssText = `
-                    position: fixed;
-                    background: #2c5530;
-                    color: white;
-                    padding: 8px 12px;
-                    border-radius: 6px;
-                    font-size: 12px;
-                    z-index: 1002;
-                    pointer-events: none;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                `;
-                feedback.textContent = '📁 Move file';
-                document.body.appendChild(feedback);
-            }
-            
-            feedback.style.left = (x + 10) + 'px';
-            feedback.style.top = (y - 10) + 'px';
-            feedback.style.display = 'block';
-        }
-        
-        function hideDragFeedback() {
-            const feedback = document.getElementById('dragFeedback');
-            if (feedback) {
-                feedback.remove();
-            }
-        }
-        
-        function updateDropTarget(element) {
-            // Remove existing drop targets
-            document.querySelectorAll('.file-row').forEach(row => {
-                row.classList.remove('drag-over');
-            });
-            
-            // Add drop target if valid
-            const fileRow = element ? element.closest('.file-row') : null;
-            if (fileRow && isValidDropTarget(fileRow)) {
-                fileRow.classList.add('drag-over');
-            }
-        }
-        
-        function isValidDropTarget(fileRow) {
-            const fileName = fileRow.querySelector('.file-name');
-            if (!fileName) return false;
-            
-            const text = fileName.textContent;
-            // Valid drop targets: folders and parent directory
-            return text.includes('..') || text.includes('Directory') || fileRow.querySelector('.file-meta').textContent.includes('Directory');
-        }
-        
-        function getFilePathFromRow(fileRow) {
-            // Extract file path from the row's click handler or data
-            const onClick = fileRow.getAttribute('onclick');
-            if (onClick && onClick.includes('loadFiles')) {
-                const match = onClick.match(/loadFiles\('([^']+)'\)/);
-                return match ? match[1] : null;
-            }
-            return null;
         }
         
         async function moveFile(sourcePath, targetPath) {
@@ -1888,12 +1288,11 @@ $csrf_token = generateCSRFToken();
                 const data = await response.json();
                 if (data.success) {
                     loadFiles(currentPath);
-                    showMessage('File moved successfully!', 'success');
                 } else {
-                    showMessage('Move failed: ' + data.error, 'error');
+                    alert('Move failed: ' + data.error);
                 }
             } catch (error) {
-                showMessage('Move failed - connection error', 'error');
+                alert('Move failed');
             }
         }
         
@@ -1910,54 +1309,7 @@ $csrf_token = generateCSRFToken();
         
         function openPdfInNewTab() {
             if (currentPdfUrl) {
-                // For mobile devices, we want to ensure the PDF opens in a way that mobile browsers can handle
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                
-                if (isMobile) {
-                    // On mobile, opening in the same tab often works better than new tab
-                    // But we'll try new tab first for user preference
-                    const newWindow = window.open(currentPdfUrl, '_blank');
-                    
-                    // Fallback: if popup was blocked, show instructions
-                    setTimeout(() => {
-                        if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
-                            showMessage('Popup blocked. Tap the PDF link that appears or enable popups for this site.', 'error');
-                            // Create a temporary link as fallback
-                            const tempLink = document.createElement('a');
-                            tempLink.href = currentPdfUrl;
-                            tempLink.target = '_blank';
-                            tempLink.textContent = 'Open PDF';
-                            tempLink.style.cssText = `
-                                position: fixed; 
-                                top: 20px; 
-                                right: 20px; 
-                                background: #2c5530; 
-                                color: white; 
-                                padding: 12px 16px; 
-                                border-radius: 8px; 
-                                text-decoration: none; 
-                                z-index: 10000;
-                                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                            `;
-                            document.body.appendChild(tempLink);
-                            
-                            // Remove the temporary link after 10 seconds
-                            setTimeout(() => {
-                                if (tempLink.parentNode) {
-                                    document.body.removeChild(tempLink);
-                                }
-                            }, 10000);
-                        } else {
-                            showMessage('PDF opened in new tab!', 'success');
-                        }
-                    }, 100);
-                } else {
-                    // Desktop behavior
-                    window.open(currentPdfUrl, '_blank');
-                    showMessage('PDF opened in new tab!', 'success');
-                }
-            } else {
-                showMessage('PDF URL not available', 'error');
+                window.open(currentPdfUrl, '_blank');
             }
         }
         
@@ -1971,24 +1323,6 @@ $csrf_token = generateCSRFToken();
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-            }
-        }
-        
-        function closeViewer() {
-            const modal = document.getElementById('fileViewerModal');
-            const pdfViewer = document.getElementById('pdfViewer');
-            const imageDisplay = document.getElementById('imageDisplay');
-            
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            pdfViewer.src = '';
-            imageDisplay.src = '';
-            currentPdfUrl = '';
-            currentFileName = '';
-            
-            // Re-enable background scrolling
-            if ('ontouchstart' in window) {
-                document.removeEventListener('touchmove', preventBackgroundScroll);
             }
         }
         
@@ -2031,106 +1365,51 @@ $csrf_token = generateCSRFToken();
             const fileList = document.getElementById('fileList');
             let html = '';
             
-            console.log('Displaying files:', files); // Debug log
-            
             // Add parent directory if not at base
             if (currentPath !== basePath) {
                 const parentPath = currentPath.substring(0, currentPath.lastIndexOf('/')) || basePath;
-                // Both mouse and touch events for all devices
-                const dragEvents = isAdmin ? `
-                    ondrop="handleDrop(event, '${parentPath}')" 
-                    ondragover="handleDragOver(event)" 
-                    ondragleave="handleDragLeave(event)"
-                ` : '';
+                const dropEvents = isAdmin ? `ondrop="handleDrop(event, '${parentPath}')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"` : '';
                 
                 html += `
-                    <div class="file-row" onclick="loadFiles('${parentPath}')" ${dragEvents}>
-                        <div class="file-info">
-                            <div class="file-icon" style="background: #fbbf24; color: white;">📁</div>
-                            <div class="file-details">
-                                <div class="file-name">.. (Parent Directory)</div>
-                                <div class="file-meta">Go up one level</div>
-                            </div>
+                    <div class="file-row" onclick="loadFiles('${parentPath}')" ${dropEvents}>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">📁 .. (Parent Directory)</div>
+                        <div>-</div>
+                        <div>Folder</div>
+                        <div>
+                            ${isAdmin ? '<span style="color: #64748b; font-size: 0.8rem;">📂 Drop files here</span>' : ''}
                         </div>
-                        ${isAdmin ? '<div class="drag-drop-hint">📂 Drop files here</div>' : ''}
                     </div>
                 `;
             }
             
             files.forEach(file => {
-                console.log('Processing file:', file.name, 'viewable:', file.viewable, 'is_dir:', file.is_dir); // Debug log
-                
                 const clickAction = file.is_dir ? `loadFiles('${file.path}')` : '';
-                
-                // Enable drag for files on all devices if admin
                 const draggable = isAdmin && !file.is_dir ? 'draggable="true"' : '';
-                
-                // Mouse drag events
-                const mouseDragEvents = isAdmin && !file.is_dir ? `
-                    ondragstart="handleDragStart(event, '${file.path}')" 
-                    ondragend="handleDragEnd(event)"
-                ` : '';
-                
-                // Touch drag events for mobile
-                const touchDragEvents = isAdmin && !file.is_dir ? `
-                    ontouchstart="handleTouchStart(event, '${file.path}')" 
-                    ontouchmove="handleTouchMove(event, '${file.path}')" 
-                    ontouchend="handleTouchEnd(event, '${file.path}')"
-                ` : '';
-                
-                // Drop events for folders (both mouse and touch)
-                const dropEvents = file.is_dir && isAdmin ? `
-                    ondrop="handleDrop(event, '${file.path}')" 
-                    ondragover="handleDragOver(event)" 
-                    ondragleave="handleDragLeave(event)"
-                ` : '';
-                
-                // Debug the view button generation
-                const viewButton = file.viewable ? `<button class="action-btn view-btn" onclick="event.stopPropagation(); viewFile('${file.path}', '${file.name}')">View</button>` : '';
-                console.log('View button for', file.name, ':', viewButton ? 'GENERATED' : 'NOT GENERATED');
+                const dragEvents = isAdmin && !file.is_dir ? `ondragstart="handleDragStart(event, '${file.path}')" ondragend="handleDragEnd(event)"` : '';
+                const dropEvents = file.is_dir && isAdmin ? `ondrop="handleDrop(event, '${file.path}')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"` : '';
                 
                 html += `
-                    <div class="file-row" onclick="${clickAction}" ${draggable} ${mouseDragEvents} ${touchDragEvents} ${dropEvents}>
-                        <div class="file-info">
-                            <div class="file-icon" style="background: ${getIconColor(file.icon)}; color: white;">${file.icon}</div>
-                            <div class="file-details">
-                                <div class="file-name">${file.name}</div>
-                                <div class="file-meta">${file.size} • ${file.modified}</div>
-                            </div>
-                        </div>
-                        <div class="file-actions">
-                            ${viewButton}
+                    <div class="file-row" onclick="${clickAction}" ${draggable} ${dragEvents} ${dropEvents}>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">${file.icon} ${file.name}</div>
+                        <div>${file.size}</div>
+                        <div>${file.is_dir ? 'Folder' : 'File'}</div>
+                        <div>
+                            ${file.viewable ? `<button class="action-btn view-btn" onclick="event.stopPropagation(); viewFile('${file.path}', '${file.name}')">View</button>` : ''}
                             <button class="action-btn download-btn" onclick="event.stopPropagation(); downloadFile('${file.path}', '${file.name}')">Download</button>
                             ${isAdmin && !file.is_dir ? `<button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteFile('${file.path}')">Delete</button>` : ''}
+                            ${file.is_dir && isAdmin ? '<span style="color: #64748b; font-size: 0.8rem;">📂 Drop files here</span>' : ''}
                         </div>
-                        ${file.is_dir && isAdmin ? '<div class="drag-drop-hint">📂 Drop files here</div>' : ''}
                     </div>
                 `;
             });
             
-            fileList.innerHTML = html || '<div class="loading">No files found in this directory</div>';
-        }
-        
-        function getIconColor(icon) {
-            const iconColors = {
-                '🌐': '#f97316',
-                '🎨': '#3b82f6', 
-                '⚡': '#eab308',
-                '🐘': '#8b5cf6',
-                '📝': '#64748b',
-                '🖼️': '#10b981',
-                '📄': '#dc2626',
-                '📦': '#f59e0b',
-                '📊': '#059669',
-                '📁': '#fbbf24'
-            };
-            return iconColors[icon] || '#64748b';
+            fileList.innerHTML = html || '<div class="loading">No files found</div>';
         }
         
         function updateBreadcrumb() {
             const relativePath = currentPath.replace(basePath, '');
             const parts = relativePath.split('/').filter(part => part);
-            let breadcrumbHTML = `<span onclick="loadFiles('${basePath}')">🏠 Home</span>`;
+            let breadcrumbHTML = `<span onclick="loadFiles('${basePath}')" style="cursor: pointer; color: #667eea;">🏠 Home</span>`;
             
             let buildPath = basePath;
             parts.forEach((part, index) => {
@@ -2138,7 +1417,7 @@ $csrf_token = generateCSRFToken();
                 if (index === parts.length - 1) {
                     breadcrumbHTML += ` / <strong>${part}</strong>`;
                 } else {
-                    breadcrumbHTML += ` / <span onclick="loadFiles('${buildPath}')">${part}</span>`;
+                    breadcrumbHTML += ` / <span onclick="loadFiles('${buildPath}')" style="cursor: pointer; color: #667eea;">${part}</span>`;
                 }
             });
             
@@ -2147,13 +1426,11 @@ $csrf_token = generateCSRFToken();
         
         async function deleteFile(filePath) {
             if (!isAdmin) {
-                showMessage('Permission denied: Admin access required', 'error');
+                alert('Permission denied: Admin access required');
                 return;
             }
             
             if (!confirm('Are you sure you want to delete this file?')) return;
-            
-            showMessage('Deleting file...', 'loading');
             
             try {
                 const formData = new FormData();
@@ -2167,17 +1444,15 @@ $csrf_token = generateCSRFToken();
                 
                 if (data.success) {
                     loadFiles(currentPath);
-                    showMessage('File deleted successfully!', 'success');
                 } else {
-                    showMessage('Delete failed: ' + data.error, 'error');
+                    alert('Delete failed: ' + data.error);
                 }
             } catch (error) {
-                showMessage('Delete failed - connection error', 'error');
+                alert('Delete failed');
             }
         }
         
         function downloadFile(filePath, fileName) {
-            showMessage(`Downloading ${fileName}...`, 'loading');
             const downloadUrl = `?action=download&file=${encodeURIComponent(filePath)}`;
             const link = document.createElement('a');
             link.href = downloadUrl;
@@ -2185,302 +1460,70 @@ $csrf_token = generateCSRFToken();
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
-            setTimeout(() => {
-                showMessage('Download started!', 'success');
-            }, 1000);
         }
         
         async function viewFile(filePath, fileName) {
-            console.log('Attempting to view file:', fileName, 'at path:', filePath);
-            showMessage('Loading file for viewing...', 'loading');
-            
             try {
                 const response = await fetch(`?action=view&file=${encodeURIComponent(filePath)}`);
-                console.log('Response status:', response.status);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
                 const data = await response.json();
-                console.log('View response data:', data);
                 
                 if (data.error) {
-                    showMessage('View failed: ' + data.error, 'error');
-                    console.error('View error:', data.error);
+                    alert('View failed: ' + data.error);
                     return;
                 }
                 
                 openViewer(data, fileName);
-                showMessage('File loaded successfully!', 'success');
                 
             } catch (error) {
-                console.error('View file error:', error);
-                showMessage('Failed to load file for viewing: ' + error.message, 'error');
+                alert('Failed to load file for viewing');
             }
         }
         
         function openViewer(data, fileName) {
-            console.log('Opening viewer for:', fileName, 'with data:', data);
-            
             const modal = document.getElementById('fileViewerModal');
             const modalTitle = document.getElementById('modalTitle');
             const textViewer = document.getElementById('textViewer');
             const pdfViewer = document.getElementById('pdfViewer');
-            const imageViewer = document.getElementById('imageViewer');
-            const imageDisplay = document.getElementById('imageDisplay');
-            const pdfError = document.getElementById('pdfError');
             
-            if (!modal) {
-                console.error('Modal not found!');
-                showMessage('Error: File viewer modal not found', 'error');
-                return;
-            }
-            
-            if (!textViewer) {
-                console.error('Text viewer element not found!');
-                showMessage('Error: Text viewer element not found', 'error');
-                return;
-            }
-            
-            // Reset all viewers
+            // Reset viewers
             textViewer.style.display = 'none';
-            if (pdfViewer) pdfViewer.style.display = 'none';
-            if (imageViewer) imageViewer.style.display = 'none';
-            if (pdfError) pdfError.style.display = 'none';
+            pdfViewer.style.display = 'none';
             
             modalTitle.textContent = fileName;
-            currentFileName = fileName;
             
-            // Handle different file types
             if (data.type === 'text') {
-                console.log('Displaying text content, length:', data.content ? data.content.length : 'null');
-                textViewer.value = data.content || 'No content available';
+                textViewer.value = data.content;
                 textViewer.style.display = 'block';
-                console.log('Text viewer display set to block');
                 
-                // Format JSON files
                 if (data.extension === 'json') {
                     try {
                         const formatted = JSON.stringify(JSON.parse(data.content), null, 2);
                         textViewer.value = formatted;
-                        console.log('JSON formatted successfully');
                     } catch (e) {
-                        console.log('JSON formatting failed, keeping original');
+                        // Keep original if not valid JSON
                     }
                 }
             } else if (data.type === 'pdf') {
-                console.log('Displaying PDF:', data.url);
-                currentPdfUrl = data.url;
-                
-                // Check if we're on a mobile device
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                const isTablet = /iPad|Android(?=.*\bMobile\b)/i.test(navigator.userAgent);
-                
-                if (isMobile && !isTablet) {
-                    // On mobile phones, show options instead of trying iframe
-                    console.log('Mobile device detected, showing PDF options');
-                    if (pdfError) {
-                        pdfError.style.display = 'block';
-                        // Update the content for mobile
-                        pdfError.innerHTML = `
-                            <h3>📱 Mobile PDF Viewer</h3>
-                            <p>PDF viewing on mobile works best with these options:</p>
-                            <button class="btn" onclick="openPdfInNewTab()" style="margin: 0.5rem; display: inline-flex; min-height: 44px;">📄 Open in Browser</button>
-                            <button class="btn" onclick="downloadCurrentFile()" style="margin: 0.5rem; display: inline-flex; min-height: 44px;">⬇️ Download PDF</button>
-                            <p style="font-size: 0.9rem; color: #64748b; margin-top: 1rem; line-height: 1.4;">
-                                <em><strong>Tip:</strong> "Open in Browser" will open the PDF in a new tab where your phone's built-in PDF viewer can handle it properly.</em>
-                            </p>
-                        `;
-                    }
-                } else {
-                    // Try iframe on desktop and tablets
-                    if (pdfViewer) {
-                        pdfViewer.src = data.url;
-                        pdfViewer.style.display = 'block';
-                        
-                        // Set a timeout to check if PDF loaded
-                        setTimeout(() => {
-                            // If iframe is still loading or failed, show options
-                            try {
-                                const iframeDoc = pdfViewer.contentDocument || pdfViewer.contentWindow.document;
-                                if (!iframeDoc || iframeDoc.readyState !== 'complete') {
-                                    handlePdfError();
-                                }
-                            } catch (e) {
-                                // Cross-origin or other error, show options
-                                handlePdfError();
-                            }
-                        }, 3000);
-                    }
-                }
-            } else if (data.type === 'image') {
-                console.log('Displaying image:', data.url);
-                if (imageDisplay && imageViewer) {
-                    imageDisplay.src = data.url;
-                    imageViewer.style.display = 'block';
-                    
-                    // Add pinch-to-zoom for mobile images
-                    addImageZoomSupport(imageDisplay);
-                }
-            } else {
-                console.error('Unknown file type:', data.type);
-                showMessage('Error: Unknown file type: ' + data.type, 'error');
-                return;
+                pdfViewer.src = data.url;
+                pdfViewer.style.display = 'block';
             }
             
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
-            console.log('Modal opened successfully');
-            
-            // Prevent background scrolling on mobile
-            if ('ontouchstart' in window) {
-                document.addEventListener('touchmove', preventBackgroundScroll, { passive: false });
-            }
         }
         
-        function handlePdfLoad() {
-            // PDF loaded successfully, hide error message
-            const pdfError = document.getElementById('pdfError');
-            if (pdfError) {
-                pdfError.style.display = 'none';
-            }
-        }
-        
-        function handlePdfError() {
-            // PDF failed to load in iframe, show alternative options
+        function closeViewer() {
+            const modal = document.getElementById('fileViewerModal');
             const pdfViewer = document.getElementById('pdfViewer');
-            const pdfError = document.getElementById('pdfError');
             
-            if (pdfViewer) pdfViewer.style.display = 'none';
-            if (pdfError) {
-                pdfError.style.display = 'block';
-                
-                // Check if we're on mobile for customized messaging
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                
-                if (isMobile) {
-                    pdfError.innerHTML = `
-                        <h3>📱 Mobile PDF Viewer</h3>
-                        <p>This PDF couldn't load in the preview. Choose an option below:</p>
-                        <button class="btn" onclick="openPdfInNewTab()" style="margin: 0.5rem; display: inline-flex; min-height: 44px;">📄 Open in Browser</button>
-                        <button class="btn" onclick="downloadCurrentFile()" style="margin: 0.5rem; display: inline-flex; min-height: 44px;">⬇️ Download PDF</button>
-                        <p style="font-size: 0.9rem; color: #64748b; margin-top: 1rem; line-height: 1.4;">
-                            <em><strong>Recommended:</strong> Use "Open in Browser" - your phone's PDF viewer will handle it better than the web preview.</em>
-                        </p>
-                    `;
-                } else {
-                    // Desktop/tablet error message
-                    pdfError.innerHTML = `
-                        <h3>📄 PDF Viewing Options</h3>
-                        <p>The PDF preview couldn't load. Choose how you'd like to view this document:</p>
-                        <button class="btn" onclick="openPdfInNewTab()" style="margin: 0.5rem; display: inline-flex; min-height: 44px;">📄 Open in New Tab</button>
-                        <button class="btn" onclick="downloadCurrentFile()" style="margin: 0.5rem; display: inline-flex; min-height: 44px;">⬇️ Download PDF</button>
-                        <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 1rem;">
-                            <em>Note: Some PDFs work better when opened directly in the browser or downloaded to your device.</em>
-                        </p>
-                    `;
-                }
-            }
-        }
-        
-        function openPdfInNewTab() {
-            if (currentPdfUrl) {
-                window.open(currentPdfUrl, '_blank');
-            }
-        }
-        
-        function downloadCurrentFile() {
-            if (currentPdfUrl) {
-                // Convert serve_file URL to download URL
-                const downloadUrl = currentPdfUrl.replace('action=serve_file', 'action=download');
-                const link = document.createElement('a');
-                link.href = downloadUrl;
-                link.download = currentFileName;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        }
-        
-        function addImageZoomSupport(img) {
-            let scale = 1;
-            let panning = false;
-            let pointX = 0;
-            let pointY = 0;
-            let start = { x: 0, y: 0 };
-            
-            img.style.transformOrigin = '0 0';
-            
-            // Touch events for pinch-to-zoom
-            img.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                
-                if (e.touches.length === 2) {
-                    // Pinch start
-                    const touch1 = e.touches[0];
-                    const touch2 = e.touches[1];
-                    const distance = Math.sqrt(
-                        Math.pow(touch2.clientX - touch1.clientX, 2) +
-                        Math.pow(touch2.clientY - touch1.clientY, 2)
-                    );
-                    
-                    img.dataset.initialDistance = distance;
-                    img.dataset.initialScale = scale;
-                } else if (e.touches.length === 1 && scale > 1) {
-                    // Pan start
-                    panning = true;
-                    start.x = e.touches[0].clientX - pointX;
-                    start.y = e.touches[0].clientY - pointY;
-                }
-            });
-            
-            img.addEventListener('touchmove', function(e) {
-                e.preventDefault();
-                
-                if (e.touches.length === 2) {
-                    // Pinch zoom
-                    const touch1 = e.touches[0];
-                    const touch2 = e.touches[1];
-                    const distance = Math.sqrt(
-                        Math.pow(touch2.clientX - touch1.clientX, 2) +
-                        Math.pow(touch2.clientY - touch1.clientY, 2)
-                    );
-                    
-                    const initialDistance = parseFloat(img.dataset.initialDistance);
-                    const initialScale = parseFloat(img.dataset.initialScale);
-                    scale = Math.max(1, Math.min(4, initialScale * (distance / initialDistance)));
-                    
-                    img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
-                } else if (e.touches.length === 1 && panning && scale > 1) {
-                    // Pan
-                    pointX = e.touches[0].clientX - start.x;
-                    pointY = e.touches[0].clientY - start.y;
-                    img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
-                }
-            });
-            
-            img.addEventListener('touchend', function(e) {
-                panning = false;
-                
-                // Reset if zoomed out too much
-                if (scale < 1) {
-                    scale = 1;
-                    pointX = 0;
-                    pointY = 0;
-                    img.style.transform = `translate(0px, 0px) scale(1)`;
-                }
-            });
-        }
-        
-        function preventBackgroundScroll(e) {
-            e.preventDefault();
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            pdfViewer.src = '';
         }
         
         async function createFolder() {
             if (!isAdmin) {
-                showMessage('Permission denied: Admin access required', 'error');
+                alert('Permission denied: Admin access required');
                 return;
             }
             
@@ -2490,11 +1533,9 @@ $csrf_token = generateCSRFToken();
             // Basic validation
             const invalidChars = /[<>:"/\\|?*]/;
             if (invalidChars.test(folderName)) {
-                showMessage('Folder name contains invalid characters. Please avoid: < > : " / \\ | ? *', 'error');
+                alert('Folder name contains invalid characters. Please avoid: < > : " / \\ | ? *');
                 return;
             }
-            
-            showMessage('Creating folder...', 'loading');
             
             try {
                 const formData = new FormData();
@@ -2510,17 +1551,27 @@ $csrf_token = generateCSRFToken();
                 const data = await response.json();
                 if (data.success) {
                     loadFiles(currentPath);
-                    showMessage('Folder created successfully!', 'success');
                 } else {
-                    showMessage('Failed to create folder: ' + data.error, 'error');
+                    alert('Failed to create folder: ' + data.error);
                 }
             } catch (error) {
-                showMessage('Failed to create folder: Network error', 'error');
+                alert('Failed to create folder: Network error');
             }
         }
         
         function refreshFiles() {
-            loadFiles(currentPath);
+            const refreshBtn = document.querySelector('button[onclick="refreshFiles()"]');
+            if (refreshBtn) {
+                refreshBtn.disabled = true;
+                refreshBtn.textContent = '🔄 Refreshing...';
+            }
+            
+            loadFiles(currentPath).finally(() => {
+                if (refreshBtn) {
+                    refreshBtn.disabled = false;
+                    refreshBtn.textContent = '🔄 Refresh';
+                }
+            });
         }
         
         function logout() {
@@ -2529,58 +1580,10 @@ $csrf_token = generateCSRFToken();
             }
         }
         
-        function showMessage(message, type) {
-            // Simple toast-like message system
-            const existingToast = document.getElementById('toast');
-            if (existingToast) {
-                existingToast.remove();
-            }
-            
-            const toast = document.createElement('div');
-            toast.id = 'toast';
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'error' ? '#dc2626' : type === 'success' ? '#059669' : '#2c5530'};
-                color: white;
-                padding: 12px 16px;
-                border-radius: 8px;
-                z-index: 1001;
-                font-size: 14px;
-                max-width: 300px;
-                word-wrap: break-word;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                animation: slideIn 0.3s ease;
-            `;
-            toast.textContent = message;
-            
-            // Add slide in animation
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideIn {
-                    from { transform: translateX(100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-            `;
-            document.head.appendChild(style);
-            
-            document.body.appendChild(toast);
-            
-            if (type !== 'loading') {
-                setTimeout(() => {
-                    if (toast.parentNode) {
-                        toast.style.animation = 'slideIn 0.3s ease reverse';
-                        setTimeout(() => toast.remove(), 300);
-                    }
-                }, 3000);
-            }
-        }
-        
-        // File upload handling with mobile optimizations
+        // File upload handling with improved error handling
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             if (!isAdmin) {
-                showMessage('Permission denied: Admin access required', 'error');
+                alert('Permission denied: Admin access required');
                 e.target.value = '';
                 return;
             }
@@ -2591,7 +1594,18 @@ $csrf_token = generateCSRFToken();
             let successCount = 0;
             let failCount = 0;
             
-            showMessage(`Uploading ${files.length} file(s)...`, 'loading');
+            // Show progress for multiple files
+            if (files.length > 1) {
+                const progress = document.createElement('div');
+                progress.innerHTML = `<div style="position: fixed; top: 20px; right: 20px; background: #667eea; color: white; padding: 1rem; border-radius: 8px; z-index: 1001;">Uploading ${files.length} files...</div>`;
+                document.body.appendChild(progress);
+                
+                setTimeout(() => {
+                    if (progress.parentNode) {
+                        document.body.removeChild(progress);
+                    }
+                }, 10000);
+            }
             
             for (let file of files) {
                 const formData = new FormData();
@@ -2619,59 +1633,13 @@ $csrf_token = generateCSRFToken();
             }
             
             // Show results
-            if (failCount === 0) {
-                showMessage(`${successCount} file(s) uploaded successfully!`, 'success');
-            } else {
-                showMessage(`${successCount} succeeded, ${failCount} failed. Check console for details.`, 'error');
+            if (failCount > 0) {
+                alert(`Upload completed: ${successCount} succeeded, ${failCount} failed. Check console for details.`);
             }
             
             // Refresh file list
             loadFiles(currentPath);
             e.target.value = '';
-        });
-        
-        // Drag and drop for upload area (mobile and desktop)
-        const uploadArea = document.getElementById('uploadArea');
-        
-        // Mouse events (desktop)
-        uploadArea.addEventListener('dragover', (e) => {
-            if (!isAdmin) return;
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-        
-        uploadArea.addEventListener('dragleave', () => {
-            if (!isAdmin) return;
-            uploadArea.classList.remove('dragover');
-        });
-        
-        uploadArea.addEventListener('drop', (e) => {
-            if (!isAdmin) return;
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            
-            const fileInput = document.getElementById('fileInput');
-            fileInput.files = e.dataTransfer.files;
-            fileInput.dispatchEvent(new Event('change'));
-        });
-        
-        // Touch events for mobile upload area
-        let uploadTouchStartTime = 0;
-        let uploadTouchFiles = null;
-        
-        uploadArea.addEventListener('touchstart', (e) => {
-            if (!isAdmin) return;
-            uploadTouchStartTime = Date.now();
-        });
-        
-        uploadArea.addEventListener('touchend', (e) => {
-            if (!isAdmin) return;
-            
-            // Simple tap to upload
-            const touchDuration = Date.now() - uploadTouchStartTime;
-            if (touchDuration < 500) { // Quick tap
-                triggerFileUpload();
-            }
         });
         
         // Keyboard shortcuts and accessibility
@@ -2690,21 +1658,13 @@ $csrf_token = generateCSRFToken();
             // Ctrl+U opens upload dialog (admin only)
             if (event.ctrlKey && event.key === 'u' && isAdmin) {
                 event.preventDefault();
-                triggerFileUpload();
+                document.getElementById('fileInput').click();
             }
         });
         
-        // Modal close events
-        window.onclick = function(event) {
-            const modal = document.getElementById('fileViewerModal');
-            if (event.target === modal) {
-                closeViewer();
-            }
-        }
-        
-        // Global drag and drop cleanup events for desktop
+        // Global drag and drop cleanup events
         document.addEventListener('dragend', function(event) {
-            if (!isAdmin || window.innerWidth <= 768) return;
+            if (!isAdmin) return;
             
             // Clean up all drag states
             document.querySelectorAll('.file-row').forEach(row => {
@@ -2713,25 +1673,39 @@ $csrf_token = generateCSRFToken();
             draggedElement = null;
         });
         
-        // Initial load
-        loadFiles();
-        
-        // Update interface based on screen size
-        function updateInterfaceForScreenSize() {
-            const isMobile = window.innerWidth <= 768;
-            const fileRows = document.querySelectorAll('.file-row');
+        document.addEventListener('dragleave', function(event) {
+            if (!isAdmin) return;
             
-            fileRows.forEach(row => {
-                if (isMobile) {
-                    row.removeAttribute('draggable');
-                } else if (isAdmin && !row.querySelector('.file-name').textContent.includes('..') && !row.querySelector('.file-name').textContent.includes('Directory')) {
-                    row.setAttribute('draggable', 'true');
-                }
-            });
+            // If dragging outside the window, clean up
+            if (event.clientX === 0 && event.clientY === 0) {
+                document.querySelectorAll('.file-row').forEach(row => {
+                    row.classList.remove('drag-over');
+                });
+            }
+        });
+        
+        // Prevent accidental page navigation
+        window.addEventListener('beforeunload', function(event) {
+            // Only show warning if user has made changes (uploaded files, etc.)
+            // This is a basic implementation - could be enhanced to track actual changes
+        });
+        
+        // Close modal events
+        window.onclick = function(event) {
+            const modal = document.getElementById('fileViewerModal');
+            if (event.target === modal) {
+                closeViewer();
+            }
         }
         
-        // Listen for screen size changes
-        window.addEventListener('resize', updateInterfaceForScreenSize);
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeViewer();
+            }
+        });
+        
+        // Initial load
+        loadFiles();
     </script>
 </body>
 </html>
