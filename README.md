@@ -431,7 +431,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ for security, simplicity, and cross-device compatibility**
 
-[⭐ Star this repo](https://github.com/yourusername/secure-file-manager) if you found it helpful!
+[⭐ Star this repo](https://github.com/pnwcomputers/ftp-manager) if you found it helpful!
 
 *Works seamlessly on phones, tablets, and desktop computers*
 
