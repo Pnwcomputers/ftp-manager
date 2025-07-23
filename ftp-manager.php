@@ -256,16 +256,16 @@ if (!isset($_SESSION['authenticated'])) {
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Secure File Manager Login</title>
+            <title>Secure Web File Manager Login</title>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
                 body { 
-                    font-family: Arial, sans-serif; 
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
                     max-width: 400px; 
                     margin: 100px auto; 
                     padding: 20px; 
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    background: linear-gradient(135deg, #2c5530 0%, #1e3a21 100%);
                     min-height: 100vh;
                 }
                 .login-box { 
@@ -283,8 +283,12 @@ if (!isset($_SESSION['authenticated'])) {
                     border-radius: 6px; 
                     font-size: 14px;
                 }
+                input:focus {
+                    border-color: #2c5530;
+                    outline: none;
+                }
                 button { 
-                    background: #667eea; 
+                    background: #2c5530; 
                     color: white; 
                     padding: 12px 20px; 
                     border: none; 
@@ -294,7 +298,7 @@ if (!isset($_SESSION['authenticated'])) {
                     font-size: 16px;
                     transition: background 0.3s;
                 }
-                button:hover { background: #5a6fd8; }
+                button:hover { background: #1e3a21; }
                 .error { 
                     color: #dc2626; 
                     margin: 10px 0; 
@@ -303,7 +307,7 @@ if (!isset($_SESSION['authenticated'])) {
                     border-radius: 6px; 
                     border: 1px solid #fecaca;
                 }
-                h2 { text-align: center; color: #333; margin-bottom: 1.5rem; }
+                h2 { text-align: center; color: #2c5530; margin-bottom: 1.5rem; }
                 .security-notice {
                     background: #f0fdf4;
                     border: 1px solid #bbf7d0;
@@ -325,13 +329,13 @@ if (!isset($_SESSION['authenticated'])) {
         </head>
         <body>
             <div class="login-box">
-                <h2>🔐 Secure File Manager</h2>
+                <h2>🔐 Secure Web File Manager Admin</h2>
                 <?php if (isset($error)) echo "<div class='error'>$error</div>"; ?>
                 <form method="post">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <input type="text" name="username" placeholder="Username" required autofocus autocomplete="username">
                     <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
-                    <button type="submit">Login</button>
+                    <button type="submit">Access File Manager</button>
                 </form>
                 <div class="security-notice">
                     🛡️ <strong>Security Features Active:</strong><br>
@@ -875,7 +879,7 @@ $csrf_token = generateCSRFToken();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure File Manager - PNW Computer</title>
+    <title>Secure Web File Manager</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -886,7 +890,7 @@ $csrf_token = generateCSRFToken();
         }
         
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2c5530 0%, #1e3a21 100%);
             color: white;
             padding: 1rem 2rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -949,13 +953,13 @@ $csrf_token = generateCSRFToken();
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            background: #667eea;
+            background: #2c5530;
             color: white;
             font-size: 0.9rem;
             transition: all 0.3s ease;
         }
         
-        .btn:hover { background: #5a6fd8; }
+        .btn:hover { background: #1e3a21; }
         .btn:disabled { 
             background: #cbd5e1; 
             cursor: not-allowed; 
@@ -1062,7 +1066,7 @@ $csrf_token = generateCSRFToken();
         }
         
         .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2c5530 0%, #1e3a21 100%);
             color: white;
             padding: 1rem 2rem;
             border-radius: 8px 8px 0 0;
@@ -1135,7 +1139,7 @@ $csrf_token = generateCSRFToken();
 <body>
     <div class="header">
         <div>
-            <h1>🛡️ Secure File Manager</h1>
+            <h1>🛡️ Secure Web File Manager</h1>
             <small>Enhanced Security • Activity Logging • Threat Protection</small>
         </div>
         <div class="user-info">
@@ -1409,7 +1413,7 @@ $csrf_token = generateCSRFToken();
         function updateBreadcrumb() {
             const relativePath = currentPath.replace(basePath, '');
             const parts = relativePath.split('/').filter(part => part);
-            let breadcrumbHTML = `<span onclick="loadFiles('${basePath}')" style="cursor: pointer; color: #667eea;">🏠 Home</span>`;
+            let breadcrumbHTML = `<span onclick="loadFiles('${basePath}')" style="cursor: pointer; color: #2c5530;">🏠 Home</span>`;
             
             let buildPath = basePath;
             parts.forEach((part, index) => {
@@ -1417,7 +1421,7 @@ $csrf_token = generateCSRFToken();
                 if (index === parts.length - 1) {
                     breadcrumbHTML += ` / <strong>${part}</strong>`;
                 } else {
-                    breadcrumbHTML += ` / <span onclick="loadFiles('${buildPath}')" style="cursor: pointer; color: #667eea;">${part}</span>`;
+                    breadcrumbHTML += ` / <span onclick="loadFiles('${buildPath}')" style="cursor: pointer; color: #2c5530;">${part}</span>`;
                 }
             });
             
@@ -1484,12 +1488,16 @@ $csrf_token = generateCSRFToken();
             const modalTitle = document.getElementById('modalTitle');
             const textViewer = document.getElementById('textViewer');
             const pdfViewer = document.getElementById('pdfViewer');
+            const imageViewer = document.getElementById('imageViewer');
+            const imageDisplay = document.getElementById('imageDisplay');
             
             // Reset viewers
             textViewer.style.display = 'none';
             pdfViewer.style.display = 'none';
+            imageViewer.style.display = 'none';
             
             modalTitle.textContent = fileName;
+            currentFileName = fileName;
             
             if (data.type === 'text') {
                 textViewer.value = data.content;
@@ -1504,8 +1512,12 @@ $csrf_token = generateCSRFToken();
                     }
                 }
             } else if (data.type === 'pdf') {
+                currentPdfUrl = data.url;
                 pdfViewer.src = data.url;
                 pdfViewer.style.display = 'block';
+            } else if (data.type === 'image') {
+                imageDisplay.src = data.url;
+                imageViewer.style.display = 'block';
             }
             
             modal.style.display = 'block';
@@ -1515,10 +1527,14 @@ $csrf_token = generateCSRFToken();
         function closeViewer() {
             const modal = document.getElementById('fileViewerModal');
             const pdfViewer = document.getElementById('pdfViewer');
+            const imageDisplay = document.getElementById('imageDisplay');
             
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
             pdfViewer.src = '';
+            imageDisplay.src = '';
+            currentPdfUrl = '';
+            currentFileName = '';
         }
         
         async function createFolder() {
@@ -1597,7 +1613,7 @@ $csrf_token = generateCSRFToken();
             // Show progress for multiple files
             if (files.length > 1) {
                 const progress = document.createElement('div');
-                progress.innerHTML = `<div style="position: fixed; top: 20px; right: 20px; background: #667eea; color: white; padding: 1rem; border-radius: 8px; z-index: 1001;">Uploading ${files.length} files...</div>`;
+                progress.innerHTML = `<div style="position: fixed; top: 20px; right: 20px; background: #2c5530; color: white; padding: 1rem; border-radius: 8px; z-index: 1001;">Uploading ${files.length} files...</div>`;
                 document.body.appendChild(progress);
                 
                 setTimeout(() => {
@@ -1682,12 +1698,6 @@ $csrf_token = generateCSRFToken();
                     row.classList.remove('drag-over');
                 });
             }
-        });
-        
-        // Prevent accidental page navigation
-        window.addEventListener('beforeunload', function(event) {
-            // Only show warning if user has made changes (uploaded files, etc.)
-            // This is a basic implementation - could be enhanced to track actual changes
         });
         
         // Close modal events
