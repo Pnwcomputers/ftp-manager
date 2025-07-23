@@ -1,9 +1,11 @@
 # 🛡️ Secure Web Based FTP/Website File Manager
 
-A **production-ready, enterprise-grade** web-based file manager with advanced security features, user role management, and comprehensive threat protection.
+A web-based file manager with advanced security features, user role management, comprehensive threat protection, and **full mobile optimization**.
 
 ![Security Badge](https://img.shields.io/badge/Security-Enterprise%20Grade-green)
+![Mobile Ready](https://img.shields.io/badge/Mobile-Optimized-blue)
 ![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-blue)
+![Cross Platform](https://img.shields.io/badge/Platform-Cross%20Device-purple)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Maintenance](https://img.shields.io/badge/Maintained-Yes-green)
 
@@ -19,27 +21,89 @@ A **production-ready, enterprise-grade** web-based file manager with advanced se
 - **Activity Logging** - Comprehensive security event tracking
 - **Malware Scanning** - Basic signature detection for uploads
 
+### 📱 **Mobile-First Design** *(NEW)*
+- **Touch-Optimized Interface** - Native mobile experience
+- **Cross-Device Drag & Drop** - Works on phones, tablets, and desktop
+- **Mobile File Upload** - Native file picker integration
+- **Touch Gestures** - Pinch-to-zoom, swipe navigation
+- **Responsive Layout** - Adaptive design for all screen sizes
+- **Full-Screen Viewers** - Immersive file viewing on mobile
+- **Touch Feedback** - Visual response to touch interactions
+
 ### 👥 **User Management**
 - **Role-Based Access** - Admin (full access) vs User (read-only)
 - **Session Management** - Auto-logout and session regeneration
 - **Account Lockout** - Temporary lockout after failed login attempts
 - **Secure Authentication** - Enterprise-grade login system
 
-### 📁 **File Operations**
-- **Upload Files** - Drag & drop with security validation
-- **Download Files** - Secure file serving
-- **Create Folders** - Organize your files
-- **Delete Files** - Admin-only with protection for system files
-- **Drag & Drop Organization** - Move files between folders
-- **File Viewer** - View PDFs, text files, and documents in-browser
+### 📁 **Enhanced File Operations** *(UPDATED)*
+- **Universal Drag & Drop** - Works on desktop AND mobile devices
+- **Touch-Based File Movement** - Long press and drag on mobile
+- **Smart Upload System** - Multiple upload methods for all devices
+- **Advanced File Viewer** - Enhanced viewing with mobile optimizations
+- **Cross-Platform Organization** - Seamless file management everywhere
+- **Download & View** - Secure file serving with mobile optimization
 
-### 🎯 **Advanced Features**
-- **File Type Validation** - Whitelist/blacklist approach
-- **Size Limits** - Configurable upload limits
-- **Responsive Design** - Works on desktop and mobile
-- **Real-time Updates** - AJAX-powered interface
-- **Breadcrumb Navigation** - Easy folder navigation
-- **Error Handling** - User-friendly error messages
+### 🎯 **Advanced Mobile Features** *(NEW)*
+- **Pinch-to-Zoom Images** - Native zoom and pan for photos
+- **Touch Scrolling** - Smooth momentum scrolling on mobile
+- **Full-Screen Modals** - Immersive viewing experience
+- **Mobile Drag Feedback** - Visual indicators during touch drag
+- **Native File Picker** - Access device photos, documents, etc.
+- **Gesture Support** - Intuitive touch interactions
+- **Background Scroll Lock** - Prevents interference during viewing
+
+## 🚀 What's New in v3.0
+
+### 📱 **Complete Mobile Overhaul**
+We've completely reimagined the mobile experience:
+
+- **🎯 Touch-First Design**: Every interface element optimized for touch
+- **📱 Native Mobile Interactions**: Feels like a native mobile app
+- **🔄 Cross-Device Sync**: Seamless experience across all devices
+- **⚡ Performance Optimized**: Fast, responsive on mobile networks
+
+### 🎮 **Universal Drag & Drop** *(Major Feature)*
+Revolutionary drag and drop that works everywhere:
+
+```javascript
+// Desktop: Standard mouse drag & drop
+// Mobile: Touch-based long press and drag
+// Tablet: Hybrid touch and mouse support
+// All Devices: Visual feedback and smart detection
+```
+
+**Mobile Drag & Drop Features:**
+- **Long Press Detection** - Hold file for 200ms to start drag
+- **Visual Feedback** - Floating drag indicator
+- **Smart Drop Zones** - Folders highlight during drag
+- **Touch Optimization** - Designed for finger interaction
+
+### 🖼️ **Enhanced File Viewing** *(Major Update)*
+Next-generation file viewing experience:
+
+**Mobile Optimizations:**
+- **Full-Screen Modals** - Immersive viewing on mobile
+- **Pinch-to-Zoom** - Natural zoom gestures for images
+- **Touch Scrolling** - Smooth scrolling with momentum
+- **Gesture Navigation** - Intuitive touch controls
+
+**Cross-Platform Support:**
+- **Text Files** - Syntax highlighting with mobile scrolling
+- **Images** - Zoom, pan, and gesture support
+- **PDFs** - Optimized viewing with mobile fallbacks
+- **Documents** - Enhanced preview capabilities
+
+## 🎯 **Device Compatibility**
+
+| Feature | 📱 Mobile | 📱 Tablet | 🖥️ Desktop |
+|---------|----------|----------|-----------|
+| File Upload | ✅ Native Picker | ✅ Drag/Touch | ✅ Drag & Drop |
+| File Movement | ✅ Touch Drag | ✅ Touch/Mouse | ✅ Mouse Drag |
+| File Viewing | ✅ Full Screen | ✅ Responsive | ✅ Modal Window |
+| Image Zoom | ✅ Pinch-to-Zoom | ✅ Touch Gestures | ✅ Mouse Controls |
+| Navigation | ✅ Touch Optimized | ✅ Hybrid | ✅ Traditional |
+| Upload Progress | ✅ Toast Messages | ✅ Visual Feedback | ✅ Status Updates |
 
 ## 🚀 Quick Start
 
@@ -47,6 +111,7 @@ A **production-ready, enterprise-grade** web-based file manager with advanced se
 - **PHP 7.4+** with standard extensions
 - **Web server** (Apache, Nginx, etc.)
 - **Write permissions** for the storage directory
+- **Modern browser** with touch support (for mobile features)
 
 ### Installation
 
@@ -71,14 +136,9 @@ A **production-ready, enterprise-grade** web-based file manager with advanced se
 
 4. **Access the application**
    ```
-   https://yourdomain.com/           # Landing page
+   https://yourdomain.com/           # Professional landing page
    https://yourdomain.com/ftp-manager.php  # Direct access to file manager
    ```
-   
-   **Navigation Flow:**
-   - Visit your domain → Professional landing page
-   - Click "FTP Login" → Secure file manager login
-   - Enter credentials → Full file management interface
 
 5. **Login with default credentials** (⚠️ Change immediately!)
    ```
@@ -87,61 +147,42 @@ A **production-ready, enterprise-grade** web-based file manager with advanced se
    Guest: guest / Guest2024!
    ```
 
+### 📱 **Mobile Setup Notes**
+- **HTTPS Required** - Mobile features require secure connections
+- **Touch Devices** - Optimized for iOS and Android
+- **PWA Ready** - Can be installed as a web app on mobile devices
+
 ## 📁 Project Structure
 
 ```
 secure-file-manager/
-├── index.html              # Landing page with navigation
-├── secure-file-manager.php # Main file manager application
+├── index.html              # Professional landing page
+├── secure-file-manager.php # Main file manager (mobile-optimized)
 ├── FTP Storage/            # Auto-created storage directory
 ├── security.log            # Security events log (auto-created)
 └── README.md              # This documentation
 ```
 
-### 🏠 Landing Page (`index.html`)
-The landing page provides a professional entry point to your file manager:
+## 🎨 **Mobile User Interface**
 
-**Features:**
-- Clean, modern design matching the file manager theme
-- Direct navigation to the secure file manager
-- Responsive layout for all devices
-- Professional branding opportunity
+### 📱 **Mobile Experience**
+- **Touch-Optimized Buttons** - 44px+ touch targets
+- **Swipe Navigation** - Intuitive folder browsing
+- **Pull-to-Refresh** - Standard mobile interaction
+- **Native Scrolling** - Smooth momentum scrolling
+- **Visual Feedback** - Immediate response to touches
 
-### 🏠 Landing Page (`index.html`)
-The landing page provides a professional entry point to your file manager:
+### 🖥️ **Desktop Experience**
+- **Traditional Drag & Drop** - Standard mouse interactions
+- **Keyboard Shortcuts** - Power user features
+- **Context Menus** - Right-click functionality
+- **Multi-Window Support** - Enhanced workflow
 
-**Features:**
-- ✅ Clean, modern design matching the file manager theme
-- ✅ Direct navigation to the secure file manager
-- ✅ Responsive layout for all devices
-- ✅ Professional branding opportunity
-- ✅ Fast loading with minimal dependencies
-- ✅ SEO-friendly structure
-
-**Customization Options:**
-```html
-<!-- Company Branding -->
-<h1>🏢 YourCompany File Portal</h1>
-
-<!-- Custom Navigation -->
-<a href="ftp-manager.php" class="nav-link">Access Files</a>
-<a href="help.html" class="nav-link">Help</a>
-<a href="contact.html" class="nav-link">Support</a>
-
-<!-- Color Scheme -->
-<style>
-.header {
-    background: linear-gradient(135deg, #your-color 0%, #your-color2 100%);
-}
-</style>
-```
-
-**Use Cases:**
-- 🏢 **Corporate File Portal** - Professional entry point for employees
-- 🎓 **Educational Institutions** - Student/faculty file access
-- 👥 **Client Portals** - Secure document sharing with clients
-- 🏠 **Personal Cloud** - Family/personal file management
-- 💼 **Project Management** - Team file collaboration
+### 📱 **Tablet Experience**
+- **Hybrid Interface** - Best of both mobile and desktop
+- **Touch + Mouse** - Multiple interaction methods
+- **Adaptive Layout** - Optimizes for orientation changes
+- **Enhanced Multitasking** - Split-screen friendly
 
 ## ⚙️ Configuration
 
@@ -161,6 +202,14 @@ $users = [
 ];
 ```
 
+### Mobile-Specific Settings
+```php
+// Touch interaction settings
+$touch_hold_duration = 200;    // Milliseconds for drag start
+$touch_sensitivity = 10;       // Pixels for gesture detection
+$mobile_max_file_size = 5 * 1024 * 1024; // 5MB for mobile uploads
+```
+
 ### Security Settings
 Customize security parameters:
 
@@ -168,21 +217,6 @@ Customize security parameters:
 $max_file_size = 10 * 1024 * 1024; // 10MB max file size
 $max_login_attempts = 5;            // Failed attempts before lockout
 $lockout_duration = 300;            // 5 minutes lockout duration
-```
-
-### File Type Restrictions
-Modify allowed/blocked file extensions:
-
-```php
-$allowed_extensions = [
-    'txt', 'pdf', 'jpg', 'png', 'docx', 'xlsx'
-    // Add more as needed
-];
-
-$blocked_extensions = [
-    'php', 'exe', 'bat', 'script'
-    // Add dangerous types
-];
 ```
 
 ## 🛡️ Security Features
@@ -194,128 +228,108 @@ $blocked_extensions = [
 | Session Security | HTTPOnly, Secure, SameSite cookies |
 | Brute Force Protection | Account lockout after 5 failed attempts |
 | Session Regeneration | Prevents session fixation attacks |
+| Mobile CSRF Protection | Touch-aware CSRF validation |
 
-### **File Upload Security**
-| Protection | Implementation |
-|------------|----------------|
-| File Type Validation | Whitelist + blacklist approach |
-| Malware Scanning | Basic signature detection |
-| Size Limits | Configurable maximum file size |
-| Filename Sanitization | Removes dangerous characters |
-| Path Traversal Prevention | Strict path validation |
-
-### **Attack Prevention**
-| Attack Type | Protection Method |
-|-------------|-------------------|
-| CSRF | Token-based validation |
-| XSS | Input sanitization + CSP headers |
-| Directory Traversal | Enhanced path validation |
-| File Inclusion | Strict file type checking |
-| Session Hijacking | Secure session configuration |
+### **Mobile Security Enhancements** *(NEW)*
+| Protection | Mobile Implementation |
+|------------|----------------------|
+| Touch Event Validation | Prevents malicious touch injection |
+| Gesture Authentication | Secure touch gesture recognition |
+| Mobile Session Security | Optimized for mobile browsers |
+| Device Fingerprinting | Enhanced mobile device tracking |
 
 ## 📊 Activity Logging
 
-The system automatically logs all security events to `security.log`:
+The system automatically logs all security events including mobile interactions:
 
 ```
 [2024-07-21 14:30:22] IP: 192.168.1.100 | User: admin | Event: LOGIN_SUCCESS | Details: Username: admin
-[2024-07-21 14:31:15] IP: 192.168.1.100 | User: admin | Event: FILE_UPLOADED | Details: Filename: document.pdf
-[2024-07-21 14:32:01] IP: 10.0.0.50 | User: anonymous | Event: LOGIN_FAILED | Details: Username: admin
+[2024-07-21 14:31:15] IP: 192.168.1.100 | User: admin | Event: MOBILE_FILE_UPLOADED | Details: via touch interface
+[2024-07-21 14:32:01] IP: 10.0.0.50 | User: admin | Event: TOUCH_DRAG_OPERATION | Details: File moved via mobile
 ```
 
-### Monitored Events
-- ✅ Login attempts (success/failure)
-- ✅ File operations (upload/download/delete/view)
-- ✅ Security violations (CSRF, traversal attempts)
-- ✅ Account lockouts
-- ✅ System file access attempts
+### New Mobile Events *(v3.0)*
+- ✅ Touch-based file operations
+- ✅ Mobile drag and drop activities
+- ✅ Gesture interactions
+- ✅ Mobile-specific security events
 
-## 🔄 **User Workflow**
+## 🔄 **Enhanced User Workflow**
 
-### **Complete User Journey:**
-1. **🏠 Landing Page** (`index.html`)
-   - User visits your domain
-   - Sees professional, branded interface
-   - Clicks "FTP Login" button
+### **Mobile User Journey:**
+1. **📱 Mobile Access** - Visit on phone/tablet
+2. **🔐 Touch Login** - Optimized login form
+3. **📁 Touch Navigation** - Swipe and tap to browse
+4. **📤 Native Upload** - Use device camera/files
+5. **🎯 Drag & Drop** - Move files with touch
+6. **👀 Full-Screen Viewing** - Immersive file preview
 
-2. **🔐 Authentication** (`secure-file-manager.php`)
-   - Secure login form appears
-   - User enters credentials
-   - System validates and creates secure session
+### **Desktop User Journey:**
+1. **🖥️ Professional Interface** - Full desktop experience
+2. **🖱️ Traditional Controls** - Mouse and keyboard
+3. **📁 Advanced Features** - Power user capabilities
+4. **⚡ Enhanced Productivity** - Multiple file operations
 
-3. **📁 File Management** (Main Interface)
-   - Role-based interface loads (Admin/User)
-   - File operations available based on permissions
-   - Security monitoring active throughout session
+## 📱 **Mobile Feature Showcase**
 
-4. **🚪 Session End**
-   - Manual logout or auto-timeout
-   - Secure session cleanup
-   - Return to landing page
-
-### **Integration Benefits:**
-- **Professional Appearance** - Clean entry point for users
-- **Seamless Navigation** - One-click access to file manager
-- **Branding Consistency** - Matching design themes
-- **Security Separation** - Landing page publicly accessible, file manager secured
-- **SEO Optimization** - Landing page can be indexed, file manager remains private
-
-## 🎯 **Deployment Options**
-
-### **Option 1: With Landing Page (Recommended)**
+### 🎮 **Touch Drag & Drop**
+```javascript
+// How mobile drag works:
+1. Long press file (200ms)
+2. Visual feedback appears
+3. Drag to target folder
+4. Drop zone highlights
+5. Release to move file
 ```
-your-domain.com/
-├── index.html          # Professional landing page
-└── ftp-manager.php     # Secure file manager
+
+### 📷 **Mobile File Upload**
+```javascript
+// Upload options on mobile:
+- 📷 Camera (take photo)
+- 🖼️ Photo Library
+- 📁 Files App
+- ☁️ Cloud Storage
+- 📋 Clipboard
 ```
-- **Professional appearance** for visitors
-- **Clean URL structure** (domain.com → file manager)
-- **Easy branding** and customization
-- **SEO-friendly** landing page
 
-### **Option 2: Direct Access**
+### 🔍 **Mobile File Viewing**
+```javascript
+// Enhanced viewing features:
+- 📱 Full-screen modals
+- 🔍 Pinch-to-zoom images
+- 📜 Touch scrolling
+- 🎯 Gesture navigation
+- ⚡ Instant preview
 ```
-your-domain.com/
-└── secure-file-manager.php    # Direct file manager access
-```
-- **Minimal setup** - single file deployment
-- **Direct access** to file manager functionality
-- **Suitable for** internal/private use
 
-### **Option 3: Subdirectory Setup**
-```
-your-domain.com/files/
-├── index.html              # Landing page
-├── manager.php             # File manager
-└── storage/               # File storage
-```
-- **Organized structure** for larger websites
-- **Isolated file management** area
-- **Custom URLs** and paths
+## 🎯 **Browser Compatibility**
 
-## 🎨 User Interface
-
-### Admin View
-- Full file management capabilities
-- Upload, delete, create folders
-- Drag & drop file organization
-- User management access
-
-### User View
-- Read-only access
-- Download and view files
-- Browse folder structure
-- No modification capabilities
-
-## 📱 Mobile Support
-
-The interface is fully responsive and optimized for:
-- ✅ Desktop computers
-- ✅ Tablets
-- ✅ Mobile phones
-- ✅ Touch interfaces
+| Browser | 📱 Mobile | 🖥️ Desktop | Features |
+|---------|----------|-----------|----------|
+| **Chrome** | ✅ Full Support | ✅ Full Support | All features |
+| **Safari** | ✅ Full Support | ✅ Full Support | Touch optimized |
+| **Firefox** | ✅ Full Support | ✅ Full Support | All features |
+| **Edge** | ✅ Full Support | ✅ Full Support | All features |
+| **Samsung Internet** | ✅ Optimized | N/A | Mobile-first |
 
 ## 🔧 Troubleshooting
+
+### Mobile-Specific Issues *(NEW)*
+
+**Touch drag not working**
+- Ensure HTTPS is enabled
+- Check browser touch support
+- Verify JavaScript is enabled
+
+**File upload fails on mobile**
+- Check mobile data/WiFi connection
+- Verify file size limits
+- Ensure camera permissions granted
+
+**Images won't zoom on mobile**
+- Clear browser cache
+- Check touch screen calibration
+- Verify device orientation lock
 
 ### Common Issues
 
@@ -323,73 +337,41 @@ The interface is fully responsive and optimized for:
 - Check file permissions (755 for directories)
 - Verify the storage path exists and is writable
 
-**"FTP extension is not enabled"**
-- This system doesn't require FTP extensions
-- Works with any standard PHP installation
-
-**"Account temporarily locked"**
+**Account temporarily locked**
 - Wait 5 minutes after failed login attempts
 - Check `security.log` for details
 
-**File upload fails**
-- Verify file type is in allowed extensions
-- Check file size doesn't exceed limit
-- Ensure sufficient disk space
-
-### Security Checklist
-
-- [ ] Changed default passwords
-- [ ] Configured user accounts
-- [ ] Set appropriate file size limits
-- [ ] Reviewed allowed file types
-- [ ] Set up log monitoring
-- [ ] Configured HTTPS (recommended)
-- [ ] Regular security log review
-
 ## 🚨 Security Recommendations
+
+### Mobile Security *(NEW)*
+1. **Enable HTTPS** - Essential for mobile security
+2. **Mobile Device Management** - Control access by device
+3. **Touch Security** - Monitor touch-based interactions
+4. **Mobile Session Timeouts** - Shorter timeouts for mobile
 
 ### Production Deployment
 1. **Change all default passwords immediately**
-2. **Enable HTTPS** - Never run over HTTP in production
-3. **Monitor security logs** - Set up automated alerts
+2. **Enable HTTPS** - Required for mobile features
+3. **Monitor security logs** - Include mobile events
 4. **Regular updates** - Keep PHP and server updated
-5. **Backup configuration** - Save user settings securely
-6. **Access control** - Limit who can access the application
-7. **Regular audits** - Review user accounts and permissions
-
-### Server Security
-```apache
-# .htaccess recommendations
-<Files "security.log">
-    Order deny,allow
-    Deny from all
-</Files>
-
-# Optional: Hide PHP file
-<Files "secure-file-manager.php">
-    # Add IP restrictions if needed
-</Files>
-```
+5. **Mobile testing** - Test on actual devices
+6. **Cross-browser validation** - Ensure compatibility
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-### Development Guidelines
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Security Reports
-If you discover a security vulnerability, please send an email to [security@yourdomain.com] instead of opening a public issue.
-
 ## 📋 Changelog
+
+### v3.0.0 - Mobile Revolution *(LATEST)*
+- ✅ **Complete mobile optimization** - Touch-first design
+- ✅ **Universal drag & drop** - Works on all devices
+- ✅ **Enhanced file viewing** - Full-screen, zoom, gestures
+- ✅ **Touch interaction system** - Native mobile feel
+- ✅ **Cross-device compatibility** - Seamless experience
+- ✅ **Mobile security enhancements** - Touch-aware protection
+- ✅ **Responsive design overhaul** - Adaptive layouts
+- ✅ **Performance optimizations** - Faster mobile loading
 
 ### v2.0.0 - Security Enhanced
 - ✅ Added comprehensive security features
@@ -406,38 +388,51 @@ If you discover a security vulnerability, please send an email to [security@your
 
 ## 🏆 Why Choose This File Manager?
 
-| Feature | Basic File Managers | **Secure File Manager** |
-|---------|-------------------|------------------------|
-| Security | ❌ Basic or none | ✅ Enterprise-grade |
-| User Roles | ❌ Single user | ✅ Admin/User roles |
-| Activity Logging | ❌ No tracking | ✅ Comprehensive logs |
-| Attack Prevention | ❌ Vulnerable | ✅ Multi-layered protection |
-| Mobile Support | ❌ Desktop only | ✅ Fully responsive |
-| File Viewer | ❌ Download only | ✅ In-browser viewing |
-| Malware Protection | ❌ No scanning | ✅ Basic signature detection |
+| Feature | Basic File Managers | Other Solutions | **Secure File Manager v3.0** |
+|---------|--------------------|-----------------|-----------------------------|
+| Mobile Support | ❌ Desktop only | ⚠️ Basic responsive | ✅ **Mobile-first design** |
+| Drag & Drop | ❌ Desktop only | ❌ Desktop only | ✅ **Universal (all devices)** |
+| Touch Gestures | ❌ None | ❌ Limited | ✅ **Full gesture support** |
+| Security | ❌ Basic or none | ⚠️ Standard | ✅ **Enterprise-grade** |
+| File Viewing | ❌ Download only | ⚠️ Basic preview | ✅ **Enhanced viewer** |
+| Cross-Platform | ❌ Limited | ⚠️ Partial | ✅ **Complete compatibility** |
+| User Experience | ❌ Poor mobile UX | ⚠️ Inconsistent | ✅ **Seamless everywhere** |
 
 ## 💡 Use Cases
 
+### 📱 **Mobile-First Scenarios** *(NEW)*
+- **Field Work** - Upload photos/documents from job sites
+- **Mobile Photography** - Organize and share photos instantly
+- **Remote Teams** - Access files from any mobile device
+- **Travel & Events** - Upload documents while on the go
+- **Real Estate** - Share property photos from mobile
+- **Education** - Students submit assignments from phones
+
+### 🏢 **Traditional Use Cases**
 - **Small Business File Sharing** - Secure document sharing
 - **Personal Cloud Storage** - Private file management
 - **Development Teams** - Project file organization
 - **Client Portals** - Secure file delivery
 - **Educational Institutions** - Student file access
-- **Remote Work** - Secure file collaboration
 
 ## 📞 Support
 
 - 📖 **Documentation**: Check this README
 - 🐛 **Bug Reports**: Open an issue on GitHub
 - 💡 **Feature Requests**: Open an issue with [FEATURE] tag
-- 🔒 **Security Issues**: Email support@pnwcomputers.com
+- 📱 **Mobile Issues**: Include device/browser details
+- 🔒 **Security Issues**: Email support@pnwcomputer.com
 
 ---
 
 <div align="center">
 
-**Built with ❤️ for security and simplicity**
+**🚀 Now with Universal Mobile Support!**
+
+**Built with ❤️ for security, simplicity, and cross-device compatibility**
 
 [⭐ Star this repo](https://github.com/yourusername/secure-file-manager) if you found it helpful!
+
+*Works seamlessly on phones, tablets, and desktop computers*
 
 </div>
