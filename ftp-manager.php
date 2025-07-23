@@ -361,7 +361,7 @@ if (!isset($_SESSION['authenticated'])) {
         </head>
         <body>
             <div class="login-box">
-                <h2>🔐 PNW Computer Admin</h2>
+                <h2>🔐 Secure File Web Manager Admin</h2>
                 <?php if (isset($error)) echo "<div class='error'>$error</div>"; ?>
                 <form method="post">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
@@ -917,7 +917,7 @@ $csrf_token = generateCSRFToken();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PNW Computer - Secure File Manager</title>
+    <title>Web Secure File Manager</title>
     <style>
         * { 
             margin: 0; 
@@ -1531,7 +1531,7 @@ $csrf_token = generateCSRFToken();
     <div class="header">
         <div class="header-main">
             <div>
-                <h1>🛡️ PNW Computer File Manager</h1>
+                <h1>🛡️ Secure Web File Manager</h1>
                 <div class="header-subtitle">Enhanced Security • Activity Logging • Threat Protection</div>
             </div>
             <div class="user-info">
