@@ -1,0 +1,30 @@
+# --- FTP Credentials & Config (CRITICAL) ---
+# Never track your actual server connection details
+ftp_credentials.json
+.env
+config.local.json
+/config/secrets.json
+*.conf
+*.settings
+
+# --- Local Sync & Temp Data ---
+# Ignore the actual files being transferred
+/sync_folder/
+/downloads/
+/uploads/
+/temp/
+*.tmp
+*.log
+
+# --- Python / Scripting ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+
+# --- Editor & OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
