@@ -1,27 +1,37 @@
 # --- FTP Credentials & Config (CRITICAL) ---
 # Never track your actual server connection details
-ftp_credentials.json
+credentials.json
 .env
 config.local.json
-/config/secrets.json
+secrets.py
 *.conf
 *.settings
 
 # --- Local Sync & Temp Data ---
-# Ignore the actual files being transferred
-/sync_folder/
+# Ignore the actual files being transferred/synched
 /downloads/
 /uploads/
-/temp/
+/sync_folder/
+/data/
 *.tmp
-*.log
+*.bak
 
-# --- Python / Scripting ---
+# --- Logging ---
+# FTP logs can reveal your full remote directory structure
+*.log
+logs/
+
+# --- Python / Development ---
 __pycache__/
 *.py[cod]
 *$py.class
 venv/
 .venv/
+env/
+.env/
+build/
+dist/
+*.spec
 
 # --- Editor & OS ---
 .vscode/
